@@ -38,6 +38,8 @@ class Domain extends Model
     protected $fillable = [
         'agency_id',
         'user_id',
+        'admin_user',
+        'admin_password',
         'zimbra_id',
         'name',
         'status',
@@ -48,6 +50,16 @@ class Domain extends Model
         'attributes',
         'created_by',
         'updated_by',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'admin_user',
+        'admin_password',
     ];
 
     /**

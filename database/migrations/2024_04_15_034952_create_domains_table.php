@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('agency_id')->default(0)->index();
             $table->foreignId('user_id')->default(0)->index();
+            $table->string('admin_user');
+            $table->string('admin_password');
             $table->string('zimbra_id')->unique();
             $table->string('name')->unique();
             $table->enum('status', [
