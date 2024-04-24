@@ -8,7 +8,9 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Traits\ForwardsCalls;
+use PsrDiscovery\Implementations\Psr18\Clients;
 use Zimbra\Admin\AdminApi;
 
 /**
@@ -26,6 +28,11 @@ class ZimbraAdminClient
 
     public function __construct(string $serviceUrl)
     {
+        $debug = config('app.debug');
+        Clients::use(Http::withOptions([
+            'debug' => $debug,
+            'verify' => !$debug,
+         ])->buildClient());
         $this->api = new AdminApi($serviceUrl);
         $this->api->setLoger(logger());
     }
