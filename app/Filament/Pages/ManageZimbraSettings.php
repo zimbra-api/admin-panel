@@ -71,7 +71,7 @@ class ManageZimbraSettings extends SettingsPage
     private function testConnection(bool $notifySuccess = true): bool
     {
         try {
-            $data = $this->getForm()->getState();
+            $data = $this->form->getState();
             $client = new ZimbraAdminClient($data['serviceUrl']);
             $client->auth(
                 $data['adminUser'], $data['adminPassword']
