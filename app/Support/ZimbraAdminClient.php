@@ -12,6 +12,7 @@ use Illuminate\Support\Traits\ForwardsCalls;
 use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Implementations\Psr18\Clients;
 use Zimbra\Admin\AdminApi;
+use Zimbra\Admin\Struct\Attr;
 
 /**
  * Zimbra admin client
@@ -37,6 +38,18 @@ class ZimbraAdminClient
         ));
         $this->api = new AdminApi($serviceUrl);
         $this->api->setLogger(logger());
+    }
+
+    public function getConfigByName(string $configName): array
+    {
+        $values = [];
+        $attrs = $this->api->getConfig(new Attr($configName))->getAttrs();
+        foreach ($attrs as $attr) {
+            if ($attr->getKey() === $configName) {
+                $values[] = $attr->getValue();
+            }
+        }
+        return $values;
     }
 
     public function __call(string $method, array $parameters): mixed

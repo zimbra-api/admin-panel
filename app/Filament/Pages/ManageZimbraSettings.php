@@ -78,6 +78,16 @@ class ManageZimbraSettings extends SettingsPage
             $client->auth(
                 $data['adminUser'], $data['adminPassword']
             );
+            if (!empty($defaultDomain = $data['defaultDomain'])) {
+                $domains = $client->getConfigByName('zimbraDefaultDomainName');
+                if (!in_array($defaultDomain, $domains)) {
+                    Notification::make()
+                        ->warning()
+                        ->title($defaultDomain . ' ' . __('is not default domain!'))
+                        ->send();
+                    return false;
+                }
+            }
             if ($notifySuccess) {
                 Notification::make()
                     ->success()
