@@ -8,6 +8,7 @@
 
 namespace App\Support;
 
+use App\Settings\ZimbraSettings;
 use Illuminate\Support\Traits\ForwardsCalls;
 use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Implementations\Psr18\Clients;
@@ -25,6 +26,8 @@ class ZimbraAdminClient
 {
     use ForwardsCalls;
 
+    const SESSION_AUTH_TOKEN_KEY = 'zimbra-auth-token';
+
     private readonly AdminApi $api;
 
     public function __construct(string $serviceUrl)
@@ -38,6 +41,24 @@ class ZimbraAdminClient
         ));
         $this->api = new AdminApi($serviceUrl);
         $this->api->setLogger(logger());
+    }
+
+    public function authFromSession(): string
+    {
+        return rescue(function () {
+            return $this->api->authByToken(
+                session(self::SESSION_AUTH_TOKEN_KEY) ?: ''
+            )->getAuthToken();
+        }, function () {
+            $settings = app(ZimbraSettings::class);
+            $authToken = $this->api->auth(
+                $settings['adminUser'], $settings['adminPassword']
+            )->getAuthToken();
+            session([
+                self::SESSION_AUTH_TOKEN_KEY => $authToken,
+            ]);
+            return $authToken;
+        });
     }
 
     public function getConfigByName(string $configName): array
