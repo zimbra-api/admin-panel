@@ -8,8 +8,8 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Traits\ForwardsCalls;
+use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Implementations\Psr18\Clients;
 use Zimbra\Admin\AdminApi;
 
@@ -28,13 +28,15 @@ class ZimbraAdminClient
 
     public function __construct(string $serviceUrl)
     {
-        $debug = config('app.debug');
-        Clients::use(Http::withOptions([
-            'debug' => $debug,
-            'verify' => !$debug,
-         ])->buildClient());
+        Clients::add(CandidateEntity::create(
+            package: 'guzzlehttp/guzzle',
+            version: '^7.0',
+            builder: static fn () => new \GuzzleHttp\Client([
+                'verify' => !config('app.debug'),
+            ]),
+        ));
         $this->api = new AdminApi($serviceUrl);
-        $this->api->setLoger(logger());
+        $this->api->setLogger(logger());
     }
 
     public function __call(string $method, array $parameters): mixed
