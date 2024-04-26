@@ -21,16 +21,16 @@ enum UserRole: string implements HasLabel
 {
     case Administrator = 'administrator';
     case Agency        = 'agency';
-    case DomainManager = 'domain-manager';
-    case GroupManager  = 'group-manager';
+    case DomainAdmin   = 'domain-admin';
+    case GroupAdmin    = 'group-admin';
 
     public function getLabel(): string
     {
         return match ($this) {
             self::Administrator => __('Administrator'),
             self::Agency        => __('Agency'),
-            self::DomainManager => __('Domain Manager'),
-            self::GroupManager  => __('Group Manager'),
+            self::DomainAdmin   => __('Domain Admin'),
+            self::GroupAdmin    => __('Group Admin'),
         };
     }
 }

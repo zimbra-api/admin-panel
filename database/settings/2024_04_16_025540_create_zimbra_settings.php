@@ -9,5 +9,6 @@ return new class extends SettingsMigration
         $this->migrator->add('zimbra.serviceUrl', '');
         $this->migrator->add('zimbra.adminUser', '');
         $this->migrator->addEncrypted('zimbra.adminPassword', '');
+        $this->migrator->add('zimbra.defaultDomain', '');
     }
 };

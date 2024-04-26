@@ -25,6 +25,8 @@ class ZimbraSettings extends Settings
 
     public string $adminPassword;
 
+    public string $defaultDomain;
+
     public static function group(): string
     {
         return 'zimbra';

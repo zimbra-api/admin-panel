@@ -49,6 +49,8 @@ class ManageZimbraSettings extends SettingsPage
                 ->required()->label(__('Admin User')),
             TextInput::make('adminPassword')
                 ->password()->required()->label(__('Admin Password')),
+            TextInput::make('defaultDomain')
+                ->required()->label(__('Default Domain')),
         ]);
     }
 

@@ -10,7 +10,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Enums\UserRole;
 use App\Filament\Resources\UserResource;
-use App\Models\Domain;
+use App\Settings\ZimbraSettings;
 use Filament\Forms\Form;
 use Filament\Forms\Components\{
     Select,
@@ -39,7 +39,7 @@ class CreateUser extends CreateRecord
             TextInput::make('name')->required()->label(__('Name')),
             TextInput::make('email')->email()->required()->unique()
                 ->endsWith(
-                    Domain::all()->pluck('name', 'name')
+                    app(ZimbraSettings::class)->defaultDomain
                 )->validationMessages([
                     'unique' => __('The email address has already been taken.'),
                     'ends_with' => __('The email address does not belong to any domains.'),
