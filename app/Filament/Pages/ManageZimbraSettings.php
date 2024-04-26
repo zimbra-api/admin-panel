@@ -29,6 +29,7 @@ class ManageZimbraSettings extends SettingsPage
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $slug = 'zimbra-settings';
     protected static string $settings = ZimbraSettings::class;
+    protected static ?string $navigationGroup = 'Settings';
 
     public static function getNavigationLabel(): string
     {
