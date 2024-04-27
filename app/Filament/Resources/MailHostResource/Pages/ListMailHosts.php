@@ -13,7 +13,11 @@ class ListMailHosts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\Action::make('pull')
+                ->action(function () {
+                    
+                })
+                ->label(__('Pull Data')),
         ];
     }
 }
