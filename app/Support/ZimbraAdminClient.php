@@ -47,12 +47,11 @@ class ZimbraAdminClient
         $this->api->setLogger(logger());
     }
 
-    public static function fromSettings(): self
+    public static function fromSettings(bool $single = false): self
     {
-        return once(function () {
-            $settings = app(ZimbraSettings::class);
-            return new self($settings['serviceUrl']);
-        });
+        $settings = app(ZimbraSettings::class);
+        return $single ? new self($settings['serviceUrl']) :
+               once(fn () => new self($settings['serviceUrl']));
     }
 
     public static function getAttrs(AdminObjectInterface $objectInfo): array
