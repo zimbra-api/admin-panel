@@ -32,15 +32,25 @@ class ZimbraAdminClient
 
     public function __construct(string $serviceUrl)
     {
-        Clients::add(CandidateEntity::create(
-            package: 'guzzlehttp/guzzle',
-            version: '^7.0',
-            builder: static fn () => new \GuzzleHttp\Client([
-                'verify' => !config('app.debug'),
-            ]),
-        ));
+        if (config('app.debug')) {
+            Clients::add(CandidateEntity::create(
+                package: 'guzzlehttp/guzzle',
+                version: '^7.0',
+                builder: static fn () => new \GuzzleHttp\Client([
+                    'verify' => false,
+                ]),
+            ));
+        }
         $this->api = new AdminApi($serviceUrl);
         $this->api->setLogger(logger());
+    }
+
+    public static function fromSettings(): self
+    {
+        return once(function () {
+            $settings = app(ZimbraSettings::class);
+            return new self($settings['serviceUrl']);
+        });
     }
 
     public function authFromSession(): string
