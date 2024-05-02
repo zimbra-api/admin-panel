@@ -13,6 +13,8 @@ use Illuminate\Support\Traits\ForwardsCalls;
 use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Implementations\Psr18\Clients;
 use Zimbra\Admin\AdminApi;
+use Zimbra\Admin\Message\GetAllServersResponse;
+use Zimbra\Admin\Struct\AdminObjectInterface;
 use Zimbra\Admin\Struct\Attr;
 
 /**
@@ -53,6 +55,39 @@ class ZimbraAdminClient
         });
     }
 
+    public static function getAttrs(AdminObjectInterface $objectInfo): array
+    {
+        static $data = [];
+        $id = $objectInfo->getId();
+        if (isset($data[$id])) {
+            return $data[$id];
+        }
+        $attrs = [];
+        foreach ($objectInfo->getAttrList() as $attr) {
+            $attrKey = $attr->getKey();
+            $attrValue = $attr->getValue();
+            if (!isset($attrs[$attrKey])) {
+                $attrs[$attrKey] = $attrValue;
+            }
+            else {
+                if (!is_array($attrs[$attrKey])) {
+                    $attrs[$attrKey] = [$attrs[$attrKey]];
+                }
+                $attrs[$attrKey][] = $attrValue;
+            }
+        }
+        $data[$id] = $attrs;
+        return $attrs;
+    }
+
+    public static function getAttr(
+        AdminObjectInterface $objectInfo, string $key, $default = null
+    )
+    {
+        $attrs = self::getAttrs($objectInfo);
+        return $attrs[$key] ?? $default;
+    }
+
     public function authFromSession(): string
     {
         return rescue(function () {
@@ -71,6 +106,12 @@ class ZimbraAdminClient
         });
     }
 
+    /**
+     * Get global config by name
+     * 
+     * @param  string $configName
+     * @return array
+     */
     public function getConfigByName(string $configName): array
     {
         $values = [];
@@ -81,6 +122,22 @@ class ZimbraAdminClient
             }
         }
         return $values;
+    }
+
+    /**
+     * Get all mailbox servers defined in the system.
+     * 
+     * @param  string $alwaysOnClusterId
+     * @param  bool $applyConfig
+     * @return array
+     */
+    public function getAllMailboxServers(
+        ?string $alwaysOnClusterId = NULL, ?bool $applyConfig = NULL
+    ): array
+    {
+        return $this->api->getAllServers(
+            'mailbox', $alwaysOnClusterId, $applyConfig
+        )?->getServerList() ?? [];
     }
 
     public function __call(string $method, array $parameters): mixed

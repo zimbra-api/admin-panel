@@ -45,4 +45,22 @@ class ClassOfService extends Model
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * The "boot" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(static function (self $model) {
+            $model->created_by = auth()->user()->id;
+        });
+
+        static::updating(static function (self $model) {
+            $model->updated_by = auth()->user()->id;
+        });
+    }
 }
