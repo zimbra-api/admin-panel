@@ -19,7 +19,6 @@ class ListMailHosts extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        /// zimbraCreateTimestamp
         return [
             Actions\Action::make('pull')
                 ->action(function () {
@@ -33,6 +32,8 @@ class ListMailHosts extends ListRecords
                         ])->firstOr(fn () => $model::create([
                             'zimbra_id' => $server->getId(),
                             'name' => $server->getName(),
+                            'attributes' => ZimbraAdminClient::getAttrs($server),
+                            'zimbra_create' => ZimbraAdminClient::getAttr($server, 'zimbraCreateTimestamp'),
                         ]));
                     }
                 })

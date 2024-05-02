@@ -43,6 +43,18 @@ class MailHost extends Model
     ];
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'attributes' => 'array',
+        ];
+    }
+
+    /**
      * The "boot" method of the model.
      *
      * @return void
