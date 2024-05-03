@@ -26,7 +26,7 @@ return new class extends Migration
                 'closed',
                 'lockout',
                 'pending',
-            ]);
+            ])->default('active');
             $table->string('mail_host');
             $table->string('display_name');
             $table->string('title')->nullable();

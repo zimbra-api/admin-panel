@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('agencies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->default(0)->index();
             $table->string('name');
             $table->string('email');
             $table->string('telephone')->nullable();
@@ -27,20 +28,20 @@ return new class extends Migration
 
         Schema::create('agency_members', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->unique();
             $table->foreignId('agency_id')->default(0)->index();
-            $table->unsignedInteger('user_id')->default(0);
         });
 
         Schema::create('agency_mail_hosts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('agency_id')->default(0)->index();
-            $table->unsignedInteger('mail_host_id')->default(0);
+            $table->foreignId('mail_host_id')->default(0);
         });
 
         Schema::create('agency_coses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('agency_id')->default(0)->index();
-            $table->unsignedInteger('cos_id')->default(0);
+            $table->foreignId('cos_id')->default(0);
         });
     }
 

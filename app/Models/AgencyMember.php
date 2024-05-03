@@ -42,7 +42,7 @@ class AgencyMember extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'agency_id',
         'user_id',
+        'agency_id',
     ];
 }

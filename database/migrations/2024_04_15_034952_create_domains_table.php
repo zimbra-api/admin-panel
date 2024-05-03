@@ -26,7 +26,7 @@ return new class extends Migration
                 'closed',
                 'suspended',
                 'shutdown',
-            ]);
+            ])->default('active');
             $table->unsignedMediumInteger('max_accounts')->default(0);
             $table->unsignedMediumInteger('total_accounts')->default(0);
             $table->timestamp('zimbra_create')->nullable();
@@ -40,7 +40,7 @@ return new class extends Migration
         Schema::create('domain_coses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('domain_id')->default(0)->index();
-            $table->unsignedInteger('cos_id');
+            $table->foreignId('cos_id')->default(0);
         });
     }
  
