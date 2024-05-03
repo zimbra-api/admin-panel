@@ -21,14 +21,16 @@ class CreateClassOfService extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['mail_quota'] = $data['mail_quota'] * 1048576;
+        $mailQuota = $data['mail_quota'] * 1048576;
         $client = ZimbraAdminClient::fromSettings();
         $client->authFromSession();
         $cos = $client->createCos($data['name'], [
-            new Attr('zimbraMailQuota', (string) $data['mail_quota']),
+            new Attr('zimbraMailQuota', (string) $mailQuota),
             new Attr('description', $data['description']),
         ])->getCos();
+
         $data['zimbra_id'] = $cos->getId();
+        $data['mail_quota'] = $mailQuota;
         return $data;
     }
 

@@ -14,6 +14,7 @@ use App\Models\ClassOfService;
 use Filament\Forms\Form;
 use Filament\Forms\Components\{
     Grid,
+    Hidden,
     Textarea,
     TextInput,
 };
@@ -37,6 +38,7 @@ class ClassOfServiceResource extends Resource
                 TextInput::make('max_accounts')->required()->numeric()->label(__('Max Accounts')),
             ]),
             Textarea::make('description')->columnSpan(2)->label(__('Description')),
+            Hidden::make('zimbra_id'),
         ]);
     }
 
