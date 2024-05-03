@@ -22,12 +22,12 @@ class CreateAgency extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        $model = parent::handleRecordCreation($data);
+        $record = parent::handleRecordCreation($data);
 
         if (!empty($data['coses'])) {
             foreach ($data['coses'] as $id) {
                 AgencyCos::create([
-                    'agency_id' => $model->id,
+                    'agency_id' => $record->id,
                     'cos_id' => $id,
                 ]);
             }
@@ -36,13 +36,13 @@ class CreateAgency extends CreateRecord
         if (!empty($data['mail_hosts'])) {
             foreach ($data['mail_hosts'] as $id) {
                 AgencyMailHost::create([
-                    'agency_id' => $model->id,
+                    'agency_id' => $record->id,
                     'mail_host_id' => $id,
                 ]);
             }
         };
 
-        return $model;
+        return $record;
     }
 
     protected function getRedirectUrl(): string

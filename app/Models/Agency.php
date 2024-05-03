@@ -9,7 +9,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -68,11 +68,11 @@ class Agency extends Model
     /**
      * Get the members for the agency.
      */
-    public function members(): HasManyThrough
+    public function members(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             User::class,
-            AgencyMember::class,
+            'agency_members',
             'agency_id',
             'user_id',
         );
@@ -81,11 +81,11 @@ class Agency extends Model
     /**
      * Get the mail hosts for the agency.
      */
-    public function mailHosts(): HasManyThrough
+    public function mailHosts(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             MailHost::class,
-            AgencyMailHost::class,
+            'agency_mail_hosts',
             'agency_id',
             'mail_host_id',
         );
@@ -94,11 +94,11 @@ class Agency extends Model
     /**
      * Get the coses for the agency.
      */
-    public function coses(): HasManyThrough
+    public function coses(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             ClassOfService::class,
-            AgencyCos::class,
+            'agency_coses',
             'agency_id',
             'cos_id',
         );
