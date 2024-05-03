@@ -50,8 +50,8 @@ class ZimbraAdminClient
     public static function fromSettings(bool $single = false): self
     {
         $settings = app(ZimbraSettings::class);
-        return $single ? new self($settings['serviceUrl']) :
-               once(fn () => new self($settings['serviceUrl']));
+        return $single ? new self($settings->serviceUrl) :
+               once(fn () => new self($settings->serviceUrl));
     }
 
     public static function getAttrs(AdminObjectInterface $objectInfo): array
@@ -96,7 +96,7 @@ class ZimbraAdminClient
         }, function () {
             $settings = app(ZimbraSettings::class);
             $authToken = $this->api->auth(
-                $settings['adminUser'], $settings['adminPassword']
+                $settings->adminUser, $settings->adminPassword
             )->getAuthToken();
             session([
                 self::SESSION_AUTH_TOKEN_KEY => $authToken,

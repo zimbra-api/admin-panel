@@ -11,14 +11,17 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MailHostResource\Pages;
 use App\Filament\Resources\MailHostResource\RelationManagers;
 use App\Models\MailHost;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
 
+/**
+ * User resource
+ *
+ * @package  App
+ * @category Filament
+ * @author   Nguyen Van Nguyen - nguyennv1981@gmail.com
+ */
 class MailHostResource extends Resource
 {
     protected static ?string $model = MailHost::class;
@@ -28,7 +31,8 @@ class MailHostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            //
+            TextColumn::make('name')->label(__('Name')),
+            TextColumn::make('zimbra_create')->dateTime()->sortable()->label(__('Created At')),
         ]);
     }
 

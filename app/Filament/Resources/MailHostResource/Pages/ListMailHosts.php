@@ -12,6 +12,7 @@ use App\Filament\Resources\MailHostResource;
 use App\Support\ZimbraAdminClient;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Carbon;
 
 class ListMailHosts extends ListRecords
 {
@@ -20,7 +21,7 @@ class ListMailHosts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('pull')
+            Actions\Action::make('sync')
                 ->action(function () {
                     $model = static::getResource()::getModel();
                     $client = ZimbraAdminClient::fromSettings();
@@ -33,11 +34,15 @@ class ListMailHosts extends ListRecords
                             'zimbra_id' => $server->getId(),
                             'name' => $server->getName(),
                             'attributes' => ZimbraAdminClient::getAttrs($server),
-                            'zimbra_create' => ZimbraAdminClient::getAttr($server, 'zimbraCreateTimestamp'),
+                            'zimbra_create' => Carbon::createFromTimestamp(strtotime(
+                                ZimbraAdminClient::getAttr($server, 'zimbraCreateTimestamp')
+                            )),
                         ]));
                     }
+
+                    redirect(static::getResource()::getUrl());
                 })
-                ->label(__('Pull Data')),
+                ->label(__('Sync')),
         ];
     }
 }
