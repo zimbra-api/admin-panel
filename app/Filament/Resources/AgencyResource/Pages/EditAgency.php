@@ -50,7 +50,7 @@ class EditAgency extends EditRecord
 
         if (!empty($data['mail_hosts'])) {
             AgencyMailHost::where('agency_id', $record->id)
-                ->whereNotIn('cos_id', $data['mail_hosts'])
+                ->whereNotIn('mail_host_id', $data['mail_hosts'])
                 ->delete();
             foreach ($data['mail_hosts'] as $id) {
                 AgencyMailHost::firstOrCreate([
