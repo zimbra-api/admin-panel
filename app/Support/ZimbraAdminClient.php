@@ -50,8 +50,8 @@ class ZimbraAdminClient
     public static function fromSettings(bool $single = false): self
     {
         $settings = app(ZimbraSettings::class);
-        return $single ? new self($settings->serviceUrl) :
-               once(fn () => new self($settings->serviceUrl));
+        return $single ? once(fn () => new self($settings->serviceUrl)) :
+               new self($settings->serviceUrl);
     }
 
     public static function getAttrs(AdminObjectInterface $objectInfo): array
