@@ -1,4 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * This file is part of the Zimbra Multi-Tenancy Admin Panel project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Filament\Resources;
 
@@ -16,8 +22,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class DomainResource extends Resource
 {
     protected static ?string $model = Domain::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Manage';
 
     public static function form(Form $form): Form
     {
