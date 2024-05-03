@@ -28,15 +28,18 @@ class ListMailHosts extends ListRecords
                     $client->authFromSession();
                     $servers = $client->getAllMailboxServers();
                     foreach ($servers as $server) {
+                        $zimbraCreate = ZimbraAdminClient::getAttr(
+                            $server, 'zimbraCreateTimestamp'
+                        );
                         $model::where([
                             'zimbra_id' => $server->getId(),
                         ])->firstOr(fn () => $model::create([
                             'zimbra_id' => $server->getId(),
                             'name' => $server->getName(),
                             'attributes' => ZimbraAdminClient::getAttrs($server),
-                            'zimbra_create' => Carbon::createFromTimestamp(strtotime(
-                                ZimbraAdminClient::getAttr($server, 'zimbraCreateTimestamp')
-                            )),
+                            'zimbra_create' => $zimbraCreate ? Carbon::createFromTimestamp(strtotime(
+                                intval($zimbraCreate) . 'Z'
+                            )) : null,
                         ]));
                     }
 

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('zimbra_id')->unique();
             $table->string('name');
-            $table->unsignedInteger('mail_quota');
-            $table->unsignedMediumInteger('max_accounts');
+            $table->unsignedBigInteger('mail_quota')->default(0);
+            $table->unsignedMediumInteger('max_accounts')->default(0);
             $table->timestamp('zimbra_create')->nullable();
             $table->text('description')->nullable();
             $table->json('attributes')->nullable();
