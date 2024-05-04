@@ -21,14 +21,16 @@ use Filament\Forms\Components\{
 };
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 
 class AgencyResource extends Resource
 {
     protected static ?string $model = Agency::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'Configure';
+    protected static ?string $slug = 'agency';
 
     public static function form(Form $form): Form
     {
@@ -54,17 +56,23 @@ class AgencyResource extends Resource
         return $table->columns([
             TextColumn::make('name')->searchable()->label(__('Name')),
             TextColumn::make('email')->searchable()->label(__('Email')),
-            TextColumn::make('description')->searchable()->label(__('Description')),
+            TextColumn::make('coses.name')->listWithLineBreaks()->label(__('Class Of Services')),
+            TextColumn::make('mailHosts.name')->listWithLineBreaks()->label(__('Mail Hosts')),
         ])
         ->actions([
             EditAction::make(),
+            Action::make('members')
+                ->url(fn (Agency $record) => static::getUrl(
+                    'members', ['record' => $record]
+                ))
+                ->label(__('Members')),
         ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\MembersRelationManager::class,
         ];
     }
 
@@ -74,6 +82,7 @@ class AgencyResource extends Resource
             'index' => Pages\ListAgencies::route('/'),
             'create' => Pages\CreateAgency::route('/create'),
             'edit' => Pages\EditAgency::route('/{record}/edit'),
+            'members' => Pages\AgencyMembers::route('/{record}/members'),
         ];
     }
 }

@@ -19,6 +19,11 @@ class EditAgency extends EditRecord
 {
     protected static string $resource = AgencyResource::class;
 
+    public function getRelationManagers(): array
+    {
+        return [];
+    }
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data['coses'] = [];

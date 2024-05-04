@@ -26,8 +26,9 @@ use Filament\Tables\Columns\TextColumn;
 class ClassOfServiceResource extends Resource
 {
     protected static ?string $model = ClassOfService::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Configure';
+    protected static ?string $slug = 'cos';
 
     public static function form(Form $form): Form
     {
