@@ -13,7 +13,6 @@ use Illuminate\Support\Traits\ForwardsCalls;
 use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Implementations\Psr18\Clients;
 use Zimbra\Admin\AdminApi;
-use Zimbra\Admin\Message\GetAllServersResponse;
 use Zimbra\Admin\Struct\AdminObjectInterface;
 use Zimbra\Admin\Struct\Attr;
 
@@ -56,10 +55,10 @@ class ZimbraAdminClient
 
     public static function getAttrs(AdminObjectInterface $objectInfo): array
     {
-        static $data = [];
+        static $cache = [];
         $id = $objectInfo->getId();
-        if (isset($data[$id])) {
-            return $data[$id];
+        if (isset($cache[$id])) {
+            return $cache[$id];
         }
         $attrs = [];
         foreach ($objectInfo->getAttrList() as $attr) {
@@ -75,7 +74,7 @@ class ZimbraAdminClient
                 $attrs[$attrKey][] = $attrValue;
             }
         }
-        $data[$id] = $attrs;
+        $cache[$id] = $attrs;
         return $attrs;
     }
 
@@ -139,7 +138,7 @@ class ZimbraAdminClient
      * @return array
      */
     public function getAllMailboxServers(
-        ?string $alwaysOnClusterId = NULL, ?bool $applyConfig = NULL
+        ?string $alwaysOnClusterId = null, ?bool $applyConfig = null
     ): array
     {
         return $this->api->getAllServers(
