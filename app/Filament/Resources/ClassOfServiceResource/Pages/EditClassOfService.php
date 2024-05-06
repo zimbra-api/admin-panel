@@ -17,6 +17,11 @@ class EditClassOfService extends EditRecord
 {
     protected static string $resource = ClassOfServiceResource::class;
 
+    private static $defaultCoses = [
+        'default',
+        'defaultExternal',
+    ];
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data['mail_quota'] = round(
@@ -31,7 +36,9 @@ class EditClassOfService extends EditRecord
         $client = ZimbraAdminClient::fromSettings();
         $client->authFromSession();
 
-        $client->renameCos($data['zimbra_id'], $data['name']);
+        if (!in_array($data['name'], self::$defaultCoses)) {
+            $client->renameCos($data['zimbra_id'], $data['name']);
+        }
         $client->modifyCos($data['zimbra_id'], [
             new Attr('zimbraMailQuota', (string) $mailQuota),
             new Attr('description', $data['description']),
