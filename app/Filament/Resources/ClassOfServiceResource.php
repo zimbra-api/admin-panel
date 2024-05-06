@@ -25,6 +25,8 @@ use Filament\Tables\Columns\TextColumn;
 
 class ClassOfServiceResource extends Resource
 {
+    const MB = 1048576;
+
     protected static ?string $model = ClassOfService::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Configure';
@@ -49,7 +51,7 @@ class ClassOfServiceResource extends Resource
             TextColumn::make('name')->searchable()->label(__('Name')),
             TextColumn::make('description')->searchable()->label(__('Description')),
             TextColumn::make('mail_quota')->state(
-                fn ($record) => round(intval($record->mail_quota) / 1048576, 1)
+                fn ($record) => round(intval($record->mail_quota) / self::MB, 1)
             )->label(__('Mail Quota (MB)')),
             TextColumn::make('max_accounts')->label(__('Max Accounts')),
         ])->actions([

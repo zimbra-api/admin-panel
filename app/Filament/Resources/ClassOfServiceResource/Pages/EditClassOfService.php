@@ -10,7 +10,6 @@ namespace App\Filament\Resources\ClassOfServiceResource\Pages;
 
 use App\Filament\Resources\ClassOfServiceResource;
 use App\Support\ZimbraAdminClient;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Zimbra\Admin\Struct\Attr;
 
@@ -20,13 +19,15 @@ class EditClassOfService extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['mail_quota'] = round(intval($data['mail_quota']) / 1048576, 1);
+        $data['mail_quota'] = round(
+            intval($data['mail_quota']) / static::getResource()::MB, 1
+        );
         return $data;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $mailQuota = $data['mail_quota'] * 1048576;
+        $mailQuota = $data['mail_quota'] * static::getResource()::MB;
         $client = ZimbraAdminClient::fromSettings();
         $client->authFromSession();
 
@@ -38,13 +39,6 @@ class EditClassOfService extends EditRecord
 
         $data['mail_quota'] = $mailQuota;
         return $data;
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
     }
 
     protected function getRedirectUrl(): string
