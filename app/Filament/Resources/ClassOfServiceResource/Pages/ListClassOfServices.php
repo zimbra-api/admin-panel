@@ -25,8 +25,7 @@ class ListClassOfServices extends ListRecords
             Actions\Action::make('sync')
                 ->action(function () {
                     $model = static::getResource()::getModel();
-                    $client = ZimbraAdminClient::fromSettings();
-                    $client->authFromSession();
+                    $client = app(ZimbraAdminClient::class);
                     $coses = $client->getAllCos()->getCosList();
                     foreach ($coses as $cos) {
                         $zimbraCreate = ZimbraAdminClient::getAttr(

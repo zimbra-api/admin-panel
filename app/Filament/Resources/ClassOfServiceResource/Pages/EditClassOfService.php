@@ -33,8 +33,7 @@ class EditClassOfService extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $mailQuota = $data['mail_quota'] * static::getResource()::MB;
-        $client = ZimbraAdminClient::fromSettings();
-        $client->authFromSession();
+        $client = app(ZimbraAdminClient::class);
 
         if (!in_array($data['name'], self::$defaultCoses)) {
             $client->renameCos($data['zimbra_id'], $data['name']);

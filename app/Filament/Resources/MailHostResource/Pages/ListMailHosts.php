@@ -24,8 +24,7 @@ class ListMailHosts extends ListRecords
             Actions\Action::make('sync')
                 ->action(function () {
                     $model = static::getResource()::getModel();
-                    $client = ZimbraAdminClient::fromSettings();
-                    $client->authFromSession();
+                    $client = app(ZimbraAdminClient::class);
                     $servers = $client->getAllMailboxServers();
                     foreach ($servers as $server) {
                         $zimbraCreate = ZimbraAdminClient::getAttr(
