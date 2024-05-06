@@ -8,6 +8,7 @@
 
 namespace App\Filament\Resources\AgencyResource\RelationManagers;
 
+use App\Enums\UserRole;
 use App\Models\AgencyMember;
 use App\Models\User;
 use Filament\Forms\Form;
@@ -18,6 +19,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class MembersRelationManager extends RelationManager
@@ -30,11 +32,15 @@ class MembersRelationManager extends RelationManager
             Select::make('users')
                 ->required()->multiple()
                 ->options(
-                    User::all()->except(
-                        AgencyMember::all()->map(
-                            fn (AgencyMember $member) => $member->user_id
-                        )->toArray()
-                    )->pluck('name', 'id')
+                    User::whereNotIn('id', [
+                        1,
+                        ...AgencyMember::all()->map(
+                                fn (AgencyMember $member) => $member->user_id
+                            )->toArray(),
+                        ]
+                    )
+                    ->withoutRole(UserRole::Administrator)
+                    ->get()->pluck('name', 'id')
                 ),
             Hidden::make('agency_id')->default($this->ownerRecord->id),
         ]);
