@@ -25,6 +25,13 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 
+/**
+ * Agency resource
+ *
+ * @package  App
+ * @category Filament
+ * @author   Nguyen Van Nguyen - nguyennv1981@gmail.com
+ */
 class AgencyResource extends Resource
 {
     protected static ?string $model = Agency::class;

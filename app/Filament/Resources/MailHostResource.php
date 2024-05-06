@@ -15,7 +15,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 
 /**
- * User resource
+ * Mail host resource
  *
  * @package  App
  * @category Filament
