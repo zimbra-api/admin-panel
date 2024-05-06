@@ -39,8 +39,7 @@ class DistributionList extends Model
     protected $fillable = [
         'agency_id',
         'domain_id',
-        'admin_user',
-        'admin_password',
+        'group_admin',
         'zimbra_id',
         'name',
         'display_name',
