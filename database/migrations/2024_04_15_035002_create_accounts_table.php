@@ -26,8 +26,8 @@ return new class extends Migration
                 'closed',
                 'lockout',
                 'pending',
-            ])->default('active');
-            $table->string('mail_host');
+            ])->default('active')->index();
+            $table->string('mail_host')->index();
             $table->string('display_name');
             $table->string('title')->nullable();
             $table->string('organization')->nullable();
@@ -38,8 +38,8 @@ return new class extends Migration
             $table->timestamp('zimbra_create')->nullable();
             $table->text('description')->nullable();
             $table->json('attributes')->nullable();
-            $table->unsignedInteger('created_by')->default(0)->index();
-            $table->unsignedInteger('updated_by')->default(0)->index();
+            $table->string('created_by')->nullable()->index();
+            $table->string('updated_by')->nullable()->index();
             $table->timestamps();
         });
 
@@ -51,8 +51,8 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('zimbra_target_id');
             $table->timestamp('zimbra_create')->nullable();
-            $table->unsignedInteger('created_by')->default(0)->index();
-            $table->unsignedInteger('updated_by')->default(0)->index();
+            $table->string('created_by')->nullable()->index();
+            $table->string('updated_by')->nullable()->index();
             $table->timestamps();
         });
     }

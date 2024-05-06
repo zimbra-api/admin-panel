@@ -23,8 +23,8 @@ return new class extends Migration
             $table->timestamp('zimbra_create')->nullable();
             $table->text('description')->nullable();
             $table->json('attributes')->nullable();
-            $table->unsignedInteger('created_by')->default(0)->index();
-            $table->unsignedInteger('updated_by')->default(0)->index();
+            $table->string('created_by')->nullable()->index();
+            $table->string('updated_by')->nullable()->index();
             $table->timestamps();
         });
 
