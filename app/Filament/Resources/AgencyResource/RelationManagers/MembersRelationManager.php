@@ -11,12 +11,14 @@ namespace App\Filament\Resources\AgencyResource\RelationManagers;
 use App\Models\AgencyMember;
 use App\Models\User;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 
 class MembersRelationManager extends RelationManager
 {
@@ -25,7 +27,7 @@ class MembersRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('user')
+            Select::make('users')
                 ->required()->multiple()
                 ->options(
                     User::all()->except(
@@ -34,29 +36,45 @@ class MembersRelationManager extends RelationManager
                         )->toArray()
                     )->pluck('name', 'id')
                 ),
+            Hidden::make('agency_id')->default($this->ownerRecord->id),
         ]);
     }
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('name')
-            ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('email'),
-            ])
-            ->headerActions([
-                CreateAction::make()
-                    ->createAnother(false)
-                    ->modalSubmitActionLabel(__('Assign'))
-                    ->modalHeading(__('Assign Members'))
-                    ->label(__('Assign Members')),
-            ])
-            ->actions([
-                DeleteAction::make()
-                    ->label(__('Remove Member')),
-            ])
-            ->emptyStateHeading(__('No members yet'))
-            ->emptyStateDescription(__('Assign a member to get started.'));
+        return $table->columns([
+            TextColumn::make('name'),
+            TextColumn::make('email'),
+        ])
+        ->headerActions([
+            CreateAction::make()
+                ->createAnother(false)
+                ->using(function (array $data): Model {
+                    $model = null;
+                    foreach ($data['users'] as $user_id) {
+                        $model = AgencyMember::firstOrCreate([
+                            'agency_id' => $data['agency_id'],
+                            'user_id' => $user_id,
+                        ]);
+                    }
+                    return $model ?? new AgencyMember();
+                })
+                ->modalSubmitActionLabel(__('Assign'))
+                ->modalHeading(__('Assign Members'))
+                ->successNotificationTitle(__('Member assigned'))
+                ->label(__('Assign Members')),
+        ])
+        ->actions([
+            Action::make('remove')
+                ->requiresConfirmation()
+                ->action(fn (User $user) => AgencyMember::firstWhere([
+                    'agency_id' => $this->ownerRecord->id,
+                    'user_id' => $user->id,
+                ])->delete())
+                ->modalHeading(__('Remove Member'))
+                ->label(__('Remove Member')),
+        ])
+        ->emptyStateHeading(__('No members yet'))
+        ->emptyStateDescription(__('Assign a member to get started.'));
     }
 }
