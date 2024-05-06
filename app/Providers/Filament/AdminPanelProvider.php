@@ -1,7 +1,14 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * This file is part of the Zimbra Multi-Tenancy Admin Panel project.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace App\Providers\Filament;
 
+use App\Enums\AdminPanel;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -24,8 +31,8 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id(AdminPanel::Admin->value)
+            ->path(AdminPanel::Admin->path())
             ->login()
             ->colors([
                 'primary' => Color::Amber,

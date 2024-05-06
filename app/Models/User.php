@@ -8,6 +8,7 @@
 
 namespace App\Models;
 
+use App\Enums\AdminPanel;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -76,25 +77,14 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($this->isAdministrator()) {
+        if ($this->isSupperAdmin()) {
             return true;
         }
-        return $this->hasAnyRole([
-            UserRole::Agency,
-            UserRole::DomainManager,
-            UserRole::GroupManager,
-        ]);
-    }
-
-    /**
-     * User is administrator.
-     *
-     * @return bool
-     */
-    public function isAdministrator(): bool
-    {
-        return $this->isSupperAdmin()
-            || $this->hasRole(UserRole::Administrator);
+        return match ($panel->getId()) {
+            AdminPanel::Admin->value => $this->hasRole(UserRole::Administrator),
+            AdminPanel::Agency->value => $this->hasRole(UserRole::Agency),
+            default => false,
+        };
     }
 
     /**
