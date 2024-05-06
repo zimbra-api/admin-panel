@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('domains', function (Blueprint $table) {
             $table->id();
             $table->foreignId('agency_id')->default(0)->index();
-            $table->foreignId('user_id')->default(0)->index();
             $table->string('admin_user');
             $table->string('admin_password');
             $table->string('zimbra_id')->unique();

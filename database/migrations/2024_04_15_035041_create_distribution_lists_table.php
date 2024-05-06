@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('distribution_lists', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('agency_id')->index();
-            $table->foreignId('domain_id')->index();
-            $table->foreignId('user_id')->default(0)->index();
+            $table->foreignId('agency_id')->default(0)->index();
+            $table->foreignId('domain_id')->default(0)->index();
+            $table->string('admin_user');
+            $table->string('admin_password');
             $table->string('zimbra_id')->unique();
             $table->string('name')->unique();
             $table->string('display_name');
