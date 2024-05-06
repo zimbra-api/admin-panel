@@ -9,7 +9,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MailHostResource\Pages;
-use App\Filament\Resources\MailHostResource\RelationManagers;
 use App\Models\MailHost;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -33,7 +32,8 @@ class MailHostResource extends Resource
     {
         return $table->columns([
             TextColumn::make('name')->label(__('Name')),
-            TextColumn::make('zimbra_create')->dateTime()->sortable()->label(__('Created At')),
+            TextColumn::make('zimbra_create')->dateTime()
+                ->sortable()->label(__('Created At')),
         ]);
     }
 

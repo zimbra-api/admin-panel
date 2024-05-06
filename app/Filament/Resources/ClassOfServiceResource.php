@@ -9,7 +9,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClassOfServiceResource\Pages;
-use App\Filament\Resources\ClassOfServiceResource\RelationManagers;
 use App\Models\ClassOfService;
 use Filament\Forms\Form;
 use Filament\Forms\Components\{
@@ -37,10 +36,13 @@ class ClassOfServiceResource extends Resource
         return $form->schema([
             Grid::make(3)->schema([
                 TextInput::make('name')->required()->label(__('Name')),
-                TextInput::make('mail_quota')->required()->numeric()->label(__('Mail Quota (MB)')),
-                TextInput::make('max_accounts')->required()->numeric()->label(__('Max Accounts')),
+                TextInput::make('mail_quota')->required()->numeric()
+                    ->label(__('Mail Quota (MB)')),
+                TextInput::make('max_accounts')->required()->numeric()
+                    ->label(__('Max Accounts')),
             ]),
-            Textarea::make('description')->columnSpan(2)->label(__('Description')),
+            Textarea::make('description')->columnSpan(2)
+                ->label(__('Description')),
             Hidden::make('zimbra_id'),
         ]);
     }
@@ -49,7 +51,8 @@ class ClassOfServiceResource extends Resource
     {
         return $table->columns([
             TextColumn::make('name')->searchable()->label(__('Name')),
-            TextColumn::make('description')->searchable()->label(__('Description')),
+            TextColumn::make('description')->searchable()
+                ->label(__('Description')),
             TextColumn::make('mail_quota')->state(
                 fn ($record) => round(intval($record->mail_quota) / self::MB, 1)
             )->label(__('Mail Quota (MB)')),

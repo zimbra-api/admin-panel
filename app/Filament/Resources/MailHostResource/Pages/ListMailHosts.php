@@ -10,7 +10,7 @@ namespace App\Filament\Resources\MailHostResource\Pages;
 
 use App\Filament\Resources\MailHostResource;
 use App\Support\ZimbraAdminClient;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Carbon;
 
@@ -21,30 +21,29 @@ class ListMailHosts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('sync')
-                ->action(function () {
-                    $model = static::getResource()::getModel();
-                    $client = app(ZimbraAdminClient::class);
-                    $servers = $client->getAllMailboxServers();
-                    foreach ($servers as $server) {
-                        $zimbraCreate = ZimbraAdminClient::getAttr(
-                            $server, 'zimbraCreateTimestamp'
-                        );
-                        $model::where([
-                            'zimbra_id' => $server->getId(),
-                        ])->firstOr(fn () => $model::create([
-                            'zimbra_id' => $server->getId(),
-                            'name' => $server->getName(),
-                            'attributes' => ZimbraAdminClient::getAttrs($server),
-                            'zimbra_create' => $zimbraCreate ? Carbon::createFromTimestamp(strtotime(
-                                intval($zimbraCreate) . 'Z'
-                            )) : null,
-                        ]));
-                    }
+            Action::make('sync')->action(function () {
+                $model = static::getResource()::getModel();
+                $client = app(ZimbraAdminClient::class);
+                $servers = $client->getAllMailboxServers();
+                foreach ($servers as $server) {
+                    $zimbraCreate = ZimbraAdminClient::getAttr(
+                        $server, 'zimbraCreateTimestamp'
+                    );
+                    $model::where([
+                        'zimbra_id' => $server->getId(),
+                    ])->firstOr(fn () => $model::create([
+                        'zimbra_id' => $server->getId(),
+                        'name' => $server->getName(),
+                        'attributes' => ZimbraAdminClient::getAttrs($server),
+                        'zimbra_create' => $zimbraCreate ? Carbon::createFromTimestamp(strtotime(
+                            intval($zimbraCreate) . 'Z'
+                        )) : null,
+                    ]));
+                }
 
-                    redirect(static::getResource()::getUrl());
-                })
-                ->label(__('Sync')),
+                redirect(static::getResource()::getUrl());
+            })
+            ->label(__('Sync')),
         ];
     }
 }
