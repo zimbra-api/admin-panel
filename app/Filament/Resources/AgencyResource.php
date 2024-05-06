@@ -36,7 +36,8 @@ class AgencyResource extends Resource
     {
         return $form->schema([
             TextInput::make('name')->required()->label(__('Name')),
-            TextInput::make('email')->required()->email()->label(__('Email')),
+            TextInput::make('email')->required()->email()->unique()
+                ->label(__('Email')),
             TextInput::make('telephone')->label(__('Telephone')),
             TextInput::make('mobile')->label(__('Mobile')),
             TextInput::make('address')->label(__('Address')),
@@ -47,7 +48,8 @@ class AgencyResource extends Resource
             Select::make('mail_hosts')->multiple()->required()
                 ->options(MailHost::all()->pluck('name', 'id'))
                 ->label(__('Mail Hosts')),
-            Textarea::make('description')->columnSpan(2)->label(__('Description')),
+            Textarea::make('description')->columnSpan(2)
+                ->label(__('Description')),
         ]);
     }
 
