@@ -89,20 +89,28 @@ class ZimbraAdminClient
 
     public function authFromSession(): string
     {
-        return rescue(function () {
-            return $this->api->authByToken(
-                session(self::SESSION_AUTH_TOKEN_KEY) ?: ''
-            )->getAuthToken();
-        }, function () {
-            $settings = app(ZimbraSettings::class);
-            $authToken = $this->api->auth(
-                $settings->adminUser, $settings->adminPassword
-            )->getAuthToken();
-            session([
-                self::SESSION_AUTH_TOKEN_KEY => $authToken,
-            ]);
-            return $authToken;
-        });
+        if ($authToken = session(self::SESSION_AUTH_TOKEN_KEY)) {
+            return rescue(
+                fn () => $this->api->authByToken(
+                    $authToken
+                )->getAuthToken(),
+                fn () => $this->authFromSettings());
+        }
+        else {
+            return $this->authFromSettings();
+        }
+    }
+
+    private function authFromSettings(): string
+    {
+        $settings = app(ZimbraSettings::class);
+        $authToken = $this->api->auth(
+            $settings->adminUser, $settings->adminPassword
+        )->getAuthToken();
+        session([
+            self::SESSION_AUTH_TOKEN_KEY => $authToken,
+        ]);
+        return $authToken;
     }
 
     /**
