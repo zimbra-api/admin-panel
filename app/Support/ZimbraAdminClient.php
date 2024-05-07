@@ -40,8 +40,10 @@ class ZimbraAdminClient
 {
     use ForwardsCalls;
 
-    const DOMAIN_ADMIN_RIGHTS    = 'domainAdminRights';
-    const SESSION_AUTH_TOKEN_KEY = 'zimbra-auth-token';
+    const DOMAIN_ADMIN_RIGHTS       = 'domainAdminRights';
+    const MODIFY_ACCOUNT_RIGHT      = 'modifyAccount';
+    const MODIFY_DISTRIBUTION_RIGHT = 'modifyDistributionList';
+    const SESSION_AUTH_TOKEN_KEY    = 'zimbra-auth-token';
 
     private readonly AdminApi $api;
 
@@ -162,7 +164,7 @@ class ZimbraAdminClient
 
     public function grantDomainAdmin(
         string $domain, string $account
-    ): GrantRightResponse
+    ): array
     {
         $target = new EffectiveRightsTargetSelector(
             TargetType::DOMAIN,
@@ -175,9 +177,17 @@ class ZimbraAdminClient
             $account
         );
 
-        return $this->api->grantRight(
-            $target, $grantee, new RightModifierInfo(self::DOMAIN_ADMIN_RIGHTS)
-        );
+        return [
+            $this->api->grantRight(
+                $target, $grantee, new RightModifierInfo(self::DOMAIN_ADMIN_RIGHTS)
+            ),
+            $this->api->grantRight(
+                $target, $grantee, new RightModifierInfo(self::MODIFY_ACCOUNT_RIGHT)
+            ),
+            $this->api->grantRight(
+                $target, $grantee, new RightModifierInfo(self::MODIFY_DISTRIBUTION_RIGHT)
+            ),
+        ];
     }
 
     public function __call(string $method, array $parameters): mixed

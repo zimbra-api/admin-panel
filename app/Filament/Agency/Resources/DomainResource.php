@@ -10,9 +10,16 @@ namespace App\Filament\Agency\Resources;
 
 use App\Filament\Agency\Resources\DomainResource\Pages;
 use App\Filament\Agency\Resources\DomainResource\RelationManagers;
+use App\Enums\DomainStatus;
 use App\Models\Domain;
-use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\{
+    Grid,
+    Hidden,
+    Select,
+    Textarea,
+    TextInput,
+};
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,7 +34,18 @@ class DomainResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            //
+            Grid::make(3)->schema([
+                TextInput::make('name')->required()->label(__('Name')),
+                TextInput::make('domain_admin')->required()->email()->label(__('Domain Admin')),
+                TextInput::make('admin_password')->required()->password()->label(__('Admin Password')),
+            ]),
+            Select::make('status')->required()
+                ->options(DomainStatus::class)
+                ->label(__('Status')),
+            Textarea::make('description')->columnSpan(2)
+                ->label(__('Description')),
+            Hidden::make('zimbra_id'),
+            Hidden::make('agency_id')->default(auth()->user()->agency->id),
         ]);
     }
 
