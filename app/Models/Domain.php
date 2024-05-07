@@ -9,7 +9,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -68,14 +69,23 @@ class Domain extends Model
         });
     }
 
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::addGlobalScope('agency', function (Builder $builder) {
+            $builder->where('agency_id', auth()->user()->agency->id);
+        });
+    }
+
     /**
      * Get the coses for the domain.
      */
-    public function coses(): HasManyThrough
+    public function coses(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             ClassOfService::class,
-            DomainCos::class,
+            'domain_coses',
             'domain_id',
             'cos_id',
         );

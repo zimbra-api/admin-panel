@@ -44,4 +44,13 @@ class Alias extends Model
         'created_by',
         'updated_by',
     ];
+
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::addGlobalScope('agency', function (Builder $builder) {
+            $builder->where('agency_id', auth()->user()->agency->id);
+        });
+    }
 }

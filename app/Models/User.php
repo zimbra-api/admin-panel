@@ -11,6 +11,7 @@ namespace App\Models;
 use App\Enums\AdminPanel;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
@@ -67,6 +68,18 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function agency(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Agency::class,
+            AgencyMember::class,
+            'user_id',
+            'id',
+            'id',
+            'agency_id',
+        );
     }
 
     /**

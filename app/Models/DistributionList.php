@@ -9,7 +9,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,6 +51,15 @@ class DistributionList extends Model
         'updated_by',
     ];
 
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::addGlobalScope('agency', function (Builder $builder) {
+            $builder->where('agency_id', auth()->user()->agency->id);
+        });
+    }
+
     /**
      * Get the distribution list's parent.
      */
@@ -60,6 +69,8 @@ class DistributionList extends Model
             DistributionList::class,
             DlistHierarchy::class,
             'dlist_id',
+            'id',
+            'id',
             'parent_id',
         );
     }
@@ -67,11 +78,11 @@ class DistributionList extends Model
     /**
      * Get the children for the distribution list.
      */
-    public function children(): HasManyThrough
+    public function children(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             DistributionList::class,
-            DlistHierarchy::class,
+            'dlist_hierarchy',
             'parent_id',
             'dlist_id',
         );
@@ -80,11 +91,11 @@ class DistributionList extends Model
     /**
      * Get the members for the distribution list.
      */
-    public function members(): HasManyThrough
+    public function members(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Account::class,
-            DlistMember::class,
+            'dlist_members',
             'dlist_id',
             'account_id',
         );
