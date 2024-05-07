@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Filament\Resources;
+namespace App\Filament\Agency\Resources;
 
-use App\Filament\Resources\AccountResource\Pages;
-use App\Filament\Resources\AccountResource\RelationManagers;
-use App\Models\Account;
+use App\Filament\Agency\Resources\DistributionListResource\Pages;
+use App\Filament\Agency\Resources\DistributionListResource\RelationManagers;
+use App\Models\DistributionList;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,9 +19,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AccountResource extends Resource
+class DistributionListResource extends Resource
 {
-    protected static ?string $model = Account::class;
+    protected static ?string $model = DistributionList::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Manage';
 
@@ -62,9 +62,9 @@ class AccountResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAccounts::route('/'),
-            'create' => Pages\CreateAccount::route('/create'),
-            'edit' => Pages\EditAccount::route('/{record}/edit'),
+            'index' => Pages\ListDistributionLists::route('/'),
+            'create' => Pages\CreateDistributionList::route('/create'),
+            'edit' => Pages\EditDistributionList::route('/{record}/edit'),
         ];
     }
 }

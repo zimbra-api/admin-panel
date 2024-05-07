@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\DistributionListResource\Pages;
+namespace App\Filament\Agency\Resources\DistributionListResource\Pages;
 
-use App\Filament\Resources\DistributionListResource;
+use App\Filament\Agency\Resources\DistributionListResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

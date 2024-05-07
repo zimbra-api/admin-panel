@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\DomainResource\Pages;
+namespace App\Filament\Agency\Resources\AliasResource\Pages;
 
-use App\Filament\Resources\DomainResource;
+use App\Filament\Agency\Resources\AliasResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditDomain extends EditRecord
+class EditAlias extends EditRecord
 {
-    protected static string $resource = DomainResource::class;
+    protected static string $resource = AliasResource::class;
 
     protected function getHeaderActions(): array
     {

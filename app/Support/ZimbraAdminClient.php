@@ -9,12 +9,25 @@
 namespace App\Support;
 
 use App\Settings\ZimbraSettings;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ForwardsCalls;
 use PsrDiscovery\Entities\CandidateEntity;
 use PsrDiscovery\Implementations\Psr18\Clients;
+use Zimbra\Common\Enum\{
+    GranteeType,
+    GranteeBy,
+    TargetType,
+    TargetBy,
+};
 use Zimbra\Admin\AdminApi;
-use Zimbra\Admin\Struct\AdminObjectInterface;
-use Zimbra\Admin\Struct\Attr;
+use Zimbra\Admin\Message\GrantRightResponse;
+use Zimbra\Admin\Struct\{
+    AdminObjectInterface,
+    Attr,
+    EffectiveRightsTargetSelector,
+    GranteeSelector,
+    RightModifierInfo,
+};
 
 /**
  * Zimbra admin client
@@ -27,6 +40,7 @@ class ZimbraAdminClient
 {
     use ForwardsCalls;
 
+    const DOMAIN_ADMIN_RIGHTS    = 'domainAdminRights';
     const SESSION_AUTH_TOKEN_KEY = 'zimbra-auth-token';
 
     private readonly AdminApi $api;
@@ -144,6 +158,26 @@ class ZimbraAdminClient
         return $this->api->getAllServers(
             'mailbox', $alwaysOnClusterId, $applyConfig
         )?->getServerList() ?? [];
+    }
+
+    public function grantDomainAdmin(
+        string $domain, string $account
+    ): GrantRightResponse
+    {
+        $target = new EffectiveRightsTargetSelector(
+            TargetType::DOMAIN,
+            Str::of($domain)->isUuid() ? TargetBy::ID : TargetBy::NAME,
+            $domain
+        );
+        $grantee = new GranteeSelector(
+            GranteeType::ACCOUNT,
+            Str::of($account)->isUuid() ? GranteeBy::ID : GranteeBy::NAME,
+            $account
+        );
+
+        return $this->api->grantRight(
+            $target, $grantee, new RightModifierInfo(self::DOMAIN_ADMIN_RIGHTS)
+        );
     }
 
     public function __call(string $method, array $parameters): mixed

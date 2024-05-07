@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Filament\Resources;
+namespace App\Filament\Agency\Resources;
 
-use App\Filament\Resources\DomainResource\Pages;
-use App\Filament\Resources\DomainResource\RelationManagers;
-use App\Models\Domain;
+use App\Filament\Agency\Resources\AliasResource\Pages;
+use App\Filament\Agency\Resources\AliasResource\RelationManagers;
+use App\Models\Alias;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,9 +19,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DomainResource extends Resource
+class AliasResource extends Resource
 {
-    protected static ?string $model = Domain::class;
+    protected static ?string $model = Alias::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Manage';
 
@@ -62,9 +62,9 @@ class DomainResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDomains::route('/'),
-            'create' => Pages\CreateDomain::route('/create'),
-            'edit' => Pages\EditDomain::route('/{record}/edit'),
+            'index' => Pages\ListAliases::route('/'),
+            'create' => Pages\CreateAlias::route('/create'),
+            'edit' => Pages\EditAlias::route('/{record}/edit'),
         ];
     }
 }
