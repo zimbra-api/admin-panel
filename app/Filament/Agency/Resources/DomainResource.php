@@ -27,7 +27,7 @@ use Filament\Tables\Table;
 class DomainResource extends Resource
 {
     protected static ?string $model = Domain::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-globe-alt';
     protected static ?string $navigationGroup = 'Manage';
     protected static ?string $slug = 'domain';
 
@@ -39,13 +39,23 @@ class DomainResource extends Resource
                 TextInput::make('domain_admin')->required()->email()->label(__('Domain Admin')),
                 TextInput::make('admin_password')->required()->password()->label(__('Admin Password')),
             ]),
-            Select::make('status')->required()
-                ->options(DomainStatus::class)
-                ->label(__('Status')),
+            Grid::make(3)->schema([
+                Select::make('status')->required()
+                    ->options(DomainStatus::class)
+                    ->label(__('Status')),
+                Select::make('coses')->required()
+                    ->options(
+                        auth()->user()->agency->coses->pluck('name', 'id')
+                    )->multiple()
+                    ->label(__('Class Of Services')),
+                TextInput::make('max_accounts')->required()
+                    ->numeric()
+                    ->label(__('Max Accounts')),
+            ]),
             Textarea::make('description')->columnSpan(2)
                 ->label(__('Description')),
-            Hidden::make('zimbra_id'),
             Hidden::make('agency_id')->default(auth()->user()->agency->id),
+            Hidden::make('zimbra_id'),
         ]);
     }
 

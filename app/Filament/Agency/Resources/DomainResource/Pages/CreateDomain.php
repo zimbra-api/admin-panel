@@ -11,6 +11,7 @@ namespace App\Filament\Agency\Resources\DomainResource\Pages;
 use App\Filament\Agency\Resources\DomainResource;
 use App\Support\ZimbraAdminClient;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Carbon;
 use Zimbra\Admin\Struct\Attr;
 
 class CreateDomain extends CreateRecord
@@ -23,6 +24,7 @@ class CreateDomain extends CreateRecord
         $client = app(ZimbraAdminClient::class);
         $domain = $client->createDomain($data['name'], [
             new Attr('description', $data['description']),
+            new Attr('zimbraDomainMaxAccounts', $data['max_accounts']),
         ])->getDomain();
         $account = $client->createAccount(
             $data['domain_admin'],
@@ -34,6 +36,15 @@ class CreateDomain extends CreateRecord
         $client->grantDomainAdmin($domain->getName(), $account->getName());
 
         $data['zimbra_id'] = $domain->getId();
+        $zimbraCreate = ZimbraAdminClient::getAttr(
+            $domain, 'zimbraCreateTimestamp'
+        );
+        if ($zimbraCreate) {
+            $data['zimbra_create'] = Carbon::createFromTimestamp(
+                strtotime(intval($zimbraCreate) . 'Z')
+            );
+        }
+        $data['attributes'] = ZimbraAdminClient::getAttrs($domain);
         return $data;
     }
 
