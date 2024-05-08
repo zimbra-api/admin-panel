@@ -9,7 +9,6 @@
 namespace App\Filament\Agency\Resources;
 
 use App\Filament\Agency\Resources\DomainResource\Pages;
-use App\Filament\Agency\Resources\DomainResource\RelationManagers;
 use App\Enums\DomainStatus;
 use App\Models\Domain;
 use Filament\Forms\{
@@ -85,17 +84,9 @@ class DomainResource extends Resource
     {
         return $table->columns([
             //
-        ])
-        ->actions([
+        ])->actions([
             Tables\Actions\EditAction::make(),
         ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

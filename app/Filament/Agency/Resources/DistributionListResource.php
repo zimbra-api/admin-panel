@@ -9,54 +9,34 @@
 namespace App\Filament\Agency\Resources;
 
 use App\Filament\Agency\Resources\DistributionListResource\Pages;
-use App\Filament\Agency\Resources\DistributionListResource\RelationManagers;
 use App\Models\DistributionList;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DistributionListResource extends Resource
 {
     protected static ?string $model = DistributionList::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'Manage';
+    protected static ?string $slug = 'group';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                //
-            ]);
+        return $form->schema([
+            //
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
+        return $table->columns([
                 //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+        ])->actions([
+            Tables\Actions\EditAction::make(),
+        ]);
     }
 
     public static function getPages(): array
