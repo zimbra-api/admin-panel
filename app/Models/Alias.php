@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -52,5 +53,29 @@ class Alias extends Model
         static::addGlobalScope('agency', function (Builder $builder) {
             $builder->where('agency_id', auth()->user()->agency->id);
         });
+    }
+
+    /**
+     * Get the agency associated with the alias.
+     */
+    public function agency(): HasOne
+    {
+        return $this->hasOne(Agency::class);
+    }
+
+    /**
+     * Get the domain associated with the alias.
+     */
+    public function domain(): HasOne
+    {
+        return $this->hasOne(Domain::class);
+    }
+
+    /**
+     * Get the account associated with the alias.
+     */
+    public function account(): HasOne
+    {
+        return $this->hasOne(Account::class);
     }
 }

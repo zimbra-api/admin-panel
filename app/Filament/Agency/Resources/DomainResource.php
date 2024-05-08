@@ -12,7 +12,10 @@ use App\Filament\Agency\Resources\DomainResource\Pages;
 use App\Filament\Agency\Resources\DomainResource\RelationManagers;
 use App\Enums\DomainStatus;
 use App\Models\Domain;
-use Filament\Forms\Form;
+use Filament\Forms\{
+    Form,
+    Get,
+};
 use Filament\Forms\Components\{
     Grid,
     Hidden,
@@ -23,6 +26,7 @@ use Filament\Forms\Components\{
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class DomainResource extends Resource
 {
@@ -35,22 +39,40 @@ class DomainResource extends Resource
     {
         return $form->schema([
             Grid::make(3)->schema([
-                TextInput::make('name')->required()->label(__('Name')),
-                TextInput::make('domain_admin')->required()->email()->label(__('Domain Admin')),
-                TextInput::make('admin_password')->required()->password()->label(__('Admin Password')),
+                TextInput::make('name')
+                    ->rules([
+                        fn () => function (string $attribute, $value, \Closure $fail) {
+                            if (!filter_var($value, FILTER_VALIDATE_DOMAIN)) {
+                                $fail(__('The domain name is invalid.'));
+                            }
+                        },
+                    ])
+                    ->required()->unique()->label(__('Name')),
+                TextInput::make('domain_admin')->email()
+                    ->rules([
+                        fn (Get $get) => function (
+                            string $attribute, $value, \Closure $fail
+                        ) use ($get) {
+                            if (!Str::endsWith($value, $get('name'))) {
+                                $fail(__('The email address must match the domain name.'));
+                            }
+                        },
+                    ])
+                    ->required()->label(__('Domain Admin')),
+                TextInput::make('admin_password')->password()
+                    ->required()->label(__('Admin Password')),
             ]),
             Grid::make(3)->schema([
-                Select::make('status')->required()
-                    ->options(DomainStatus::class)
-                    ->label(__('Status')),
-                Select::make('coses')->required()
+                Select::make('status')->options(DomainStatus::class)
+                    ->required()->label(__('Status')),
+                Select::make('coses')
                     ->options(
                         auth()->user()->agency->coses->pluck('name', 'id')
-                    )->multiple()
-                    ->label(__('Class Of Services')),
-                TextInput::make('max_accounts')->required()
-                    ->numeric()
-                    ->label(__('Max Accounts')),
+                    )->live()->multiple()
+                    ->required()->label(__('Class Of Services')),
+                TextInput::make('max_accounts')->numeric()
+                    ->default(0)->minValue(0)
+                    ->required()->label(__('Max Accounts')),
             ]),
             Textarea::make('description')->columnSpan(2)
                 ->label(__('Description')),

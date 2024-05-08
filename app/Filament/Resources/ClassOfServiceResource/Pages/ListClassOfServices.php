@@ -37,6 +37,7 @@ class ListClassOfServices extends ListRecords
                             'zimbra_id' => $cos->getId(),
                             'name' => $cos->getName(),
                             'mail_quota' => (int) ZimbraAdminClient::getAttr($cos, 'zimbraMailQuota'),
+                            'max_accounts' => 100,
                             'description' => ZimbraAdminClient::getAttr($cos, 'description'),
                             'attributes' => ZimbraAdminClient::getAttrs($cos),
                             'zimbra_create' => $zimbraCreate ? Carbon::createFromTimestamp(strtotime(

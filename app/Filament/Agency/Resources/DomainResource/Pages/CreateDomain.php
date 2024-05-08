@@ -36,6 +36,7 @@ class CreateDomain extends CreateRecord
         $client->grantDomainAdmin($domain->getName(), $account->getName());
 
         $data['zimbra_id'] = $domain->getId();
+        $data['attributes'] = ZimbraAdminClient::getAttrs($domain);
         $zimbraCreate = ZimbraAdminClient::getAttr(
             $domain, 'zimbraCreateTimestamp'
         );
@@ -44,7 +45,6 @@ class CreateDomain extends CreateRecord
                 strtotime(intval($zimbraCreate) . 'Z')
             );
         }
-        $data['attributes'] = ZimbraAdminClient::getAttrs($domain);
         return $data;
     }
 

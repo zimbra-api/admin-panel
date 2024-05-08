@@ -9,6 +9,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -64,5 +66,44 @@ class Account extends Model
         static::addGlobalScope('agency', function (Builder $builder) {
             $builder->where('agency_id', auth()->user()->agency->id);
         });
+    }
+
+    /**
+     * Get the agency associated with the account.
+     */
+    public function agency(): HasOne
+    {
+        return $this->hasOne(Agency::class);
+    }
+
+    /**
+     * Get the domain associated with the account.
+     */
+    public function domain(): HasOne
+    {
+        return $this->hasOne(Domain::class);
+    }
+
+    /**
+     * Get the cos associated with the account.
+     */
+    public function cos(): HasOne
+    {
+        return $this->hasOne(ClassOfService::class);
+    }
+
+    /**
+     * Get the distribution list which the account is member of.
+     */
+    public function memberOf(): HasOneThrough
+    {
+        return once(fn () => $this->hasOneThrough(
+            DistributionList::class,
+            DlistMembers::class,
+            'account_id',
+            'id',
+            'id',
+            'dlist_id',
+        ));
     }
 }

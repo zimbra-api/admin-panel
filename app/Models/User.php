@@ -70,16 +70,19 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+    /**
+     * Get the agency associated with the user.
+     */
     public function agency(): HasOneThrough
     {
-        return $this->hasOneThrough(
+        return once(fn () => $this->hasOneThrough(
             Agency::class,
             AgencyMember::class,
             'user_id',
             'id',
             'id',
             'agency_id',
-        );
+        ));
     }
 
     /**

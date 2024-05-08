@@ -10,6 +10,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -76,6 +77,14 @@ class Domain extends Model
         static::addGlobalScope('agency', function (Builder $builder) {
             $builder->where('agency_id', auth()->user()->agency->id);
         });
+    }
+
+    /**
+     * Get the agency associated with the domain.
+     */
+    public function agency(): HasOne
+    {
+        return $this->hasOne(Agency::class);
     }
 
     /**

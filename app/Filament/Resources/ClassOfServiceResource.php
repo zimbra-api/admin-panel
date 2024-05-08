@@ -42,11 +42,14 @@ class ClassOfServiceResource extends Resource
     {
         return $form->schema([
             Grid::make(3)->schema([
-                TextInput::make('name')->required()->label(__('Name')),
-                TextInput::make('mail_quota')->required()->numeric()
-                    ->label(__('Mail Quota (MB)')),
-                TextInput::make('max_accounts')->required()->numeric()
-                    ->label(__('Max Accounts')),
+                TextInput::make('name')
+                    ->required()->label(__('Name')),
+                TextInput::make('mail_quota')->numeric()
+                    ->default(0)->minValue(0)
+                    ->required()->label(__('Mail Quota (MB)')),
+                TextInput::make('max_accounts')->numeric()
+                    ->default(0)->minValue(0)
+                    ->required()->label(__('Max Accounts')),
             ]),
             Textarea::make('description')->columnSpan(2)
                 ->label(__('Description')),
