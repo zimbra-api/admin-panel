@@ -51,6 +51,7 @@ class CreateDomain extends CreateRecord
                 strtotime(intval($zimbraCreate) . 'Z')
             );
         }
+        unset($data['admin_password']);
         return $data;
     }
 

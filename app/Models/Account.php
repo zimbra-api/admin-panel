@@ -70,6 +70,7 @@ class Account extends Model
     {
         return [
             'is_domain_admin' => 'bool',
+            'attributes' => 'array',
         ];
     }
 

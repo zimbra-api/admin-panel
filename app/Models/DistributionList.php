@@ -53,6 +53,18 @@ class DistributionList extends Model
         'updated_by',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'attributes' => 'array',
+        ];
+    }
+
     protected static function booted(): void
     {
         parent::booted();
