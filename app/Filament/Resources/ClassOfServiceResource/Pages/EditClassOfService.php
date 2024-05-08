@@ -49,6 +49,6 @@ class EditClassOfService extends EditRecord
 
     protected function getRedirectUrl(): string
     {
-        return static::getResource()::getUrl();
+        return $this->previousUrl ?? $this->getResource()::getUrl();
     }
 }

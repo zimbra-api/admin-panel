@@ -68,6 +68,6 @@ class CreateUser extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return static::getResource()::getUrl();
+        return $this->previousUrl ?? $this->getResource()::getUrl();
     }
 }

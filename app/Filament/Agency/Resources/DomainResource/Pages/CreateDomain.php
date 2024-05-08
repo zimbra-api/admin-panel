@@ -9,8 +9,10 @@
 namespace App\Filament\Agency\Resources\DomainResource\Pages;
 
 use App\Filament\Agency\Resources\DomainResource;
+use App\Models\Account;
 use App\Support\ZimbraAdminClient;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Zimbra\Admin\Struct\Attr;
 
@@ -48,8 +50,14 @@ class CreateDomain extends CreateRecord
         return $data;
     }
 
+    protected function handleRecordCreation(array $data): Model
+    {
+        $record = parent::handleRecordCreation($data);
+        return $record;
+    }
+
     protected function getRedirectUrl(): string
     {
-        return static::getResource()::getUrl();
+        return $this->previousUrl ?? $this->getResource()::getUrl();
     }
 }
