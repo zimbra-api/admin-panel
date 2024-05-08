@@ -73,7 +73,7 @@ class Account extends Model
      */
     public function agency(): HasOne
     {
-        return $this->hasOne(Agency::class);
+        return $this->hasOne(Agency::class, 'agency_id');
     }
 
     /**
@@ -81,7 +81,7 @@ class Account extends Model
      */
     public function domain(): HasOne
     {
-        return $this->hasOne(Domain::class);
+        return $this->hasOne(Domain::class, 'domain_id');
     }
 
     /**
@@ -89,7 +89,7 @@ class Account extends Model
      */
     public function cos(): HasOne
     {
-        return $this->hasOne(ClassOfService::class);
+        return $this->hasOne(ClassOfService::class, 'cos_id');
     }
 
     /**

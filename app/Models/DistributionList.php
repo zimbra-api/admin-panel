@@ -10,6 +10,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Model;
 
@@ -86,6 +87,22 @@ class DistributionList extends Model
             'parent_id',
             'dlist_id',
         );
+    }
+
+    /**
+     * Get the agency associated with the distribution list.
+     */
+    public function agency(): HasOne
+    {
+        return $this->hasOne(Agency::class, 'agency_id');
+    }
+
+    /**
+     * Get the domain associated with the distribution list.
+     */
+    public function domain(): HasOne
+    {
+        return $this->hasOne(Domain::class, 'domain_id');
     }
 
     /**

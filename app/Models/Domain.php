@@ -84,7 +84,7 @@ class Domain extends Model
      */
     public function agency(): HasOne
     {
-        return $this->hasOne(Agency::class);
+        return $this->hasOne(Agency::class, 'agency_id');
     }
 
     /**

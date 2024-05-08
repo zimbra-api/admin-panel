@@ -60,7 +60,7 @@ class Alias extends Model
      */
     public function agency(): HasOne
     {
-        return $this->hasOne(Agency::class);
+        return $this->hasOne(Agency::class, 'agency_id');
     }
 
     /**
@@ -68,7 +68,7 @@ class Alias extends Model
      */
     public function domain(): HasOne
     {
-        return $this->hasOne(Domain::class);
+        return $this->hasOne(Domain::class, 'domain_id');
     }
 
     /**
@@ -76,6 +76,6 @@ class Alias extends Model
      */
     public function account(): HasOne
     {
-        return $this->hasOne(Account::class);
+        return $this->hasOne(Account::class, 'account_id');
     }
 }
