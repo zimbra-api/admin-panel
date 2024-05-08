@@ -10,10 +10,12 @@ namespace App\Filament\Agency\Resources;
 
 use App\Filament\Agency\Resources\DomainResource\Pages;
 use App\Enums\DomainStatus;
+use App\Models\ClassOfService;
 use App\Models\Domain;
 use Filament\Forms\{
     Form,
     Get,
+    Set,
 };
 use Filament\Forms\Components\{
     Grid,
@@ -68,9 +70,15 @@ class DomainResource extends Resource
                     ->options(
                         auth()->user()->agency->coses->pluck('name', 'id')
                     )->live()->multiple()
+                    ->afterStateUpdated(function (Set $set, array $state) {
+                        $set(
+                            'max_accounts',
+                            ClassOfService::find($state)->sum('max_accounts')
+                        );
+                    })
                     ->required()->label(__('Class Of Services')),
-                TextInput::make('max_accounts')->numeric()
-                    ->default(0)->minValue(0)
+                TextInput::make('max_accounts')
+                    ->default(0)->minValue(0)->readonly()
                     ->required()->label(__('Max Accounts')),
             ]),
             Textarea::make('description')->columnSpan(2)

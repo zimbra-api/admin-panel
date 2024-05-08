@@ -36,6 +36,7 @@ return new class extends Migration
             $table->string('mobile')->nullable();
             $table->string('address')->nullable();
             $table->timestamp('zimbra_create')->nullable();
+            $table->boolean('is_domain_admin')->default(false);
             $table->text('description')->nullable();
             $table->json('attributes')->nullable();
             $table->string('created_by')->nullable()->index();
