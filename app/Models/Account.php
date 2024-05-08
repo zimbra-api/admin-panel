@@ -54,11 +54,24 @@ class Account extends Model
         'mobile',
         'address',
         'zimbra_create',
+        'is_domain_admin'
         'description',
         'attributes',
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_domain_admin' => 'bool',
+        ];
+    }
 
     protected static function booted(): void
     {

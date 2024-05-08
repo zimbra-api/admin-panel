@@ -28,21 +28,23 @@ class ListClassOfServices extends ListRecords
                     $client = app(ZimbraAdminClient::class);
                     $coses = $client->getAllCos()->getCosList();
                     foreach ($coses as $cos) {
-                        $zimbraCreate = ZimbraAdminClient::getAttr(
-                            $cos, 'zimbraCreateTimestamp'
-                        );
+                        $attrs = ZimbraAdminClient::getAttrs($cos);
+                        $zimbraCreate = null;
+                        if (!empty($attrs['zimbraCreateTimestamp'])) {
+                            $zimbraCreate = Carbon::createFromTimestamp(strtotime(
+                                intval($attrs['zimbraCreateTimestamp']) . 'Z'
+                            ));
+                        }
                         $model::where([
                             'zimbra_id' => $cos->getId(),
                         ])->firstOr(fn () => $model::create([
                             'zimbra_id' => $cos->getId(),
                             'name' => $cos->getName(),
-                            'mail_quota' => (int) ZimbraAdminClient::getAttr($cos, 'zimbraMailQuota'),
+                            'mail_quota' => (int) ($attrs['zimbraMailQuota'] ?? null),
                             'max_accounts' => 100,
-                            'description' => ZimbraAdminClient::getAttr($cos, 'description'),
-                            'attributes' => ZimbraAdminClient::getAttrs($cos),
-                            'zimbra_create' => $zimbraCreate ? Carbon::createFromTimestamp(strtotime(
-                                intval($zimbraCreate) . 'Z'
-                            )) : null,
+                            'description' => $attrs['description'] ?? null,
+                            'attributes' => $attrs,
+                            'zimbra_create' => $zimbraCreate,
                         ]));
                     }
 
