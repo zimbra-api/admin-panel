@@ -9,7 +9,7 @@
 namespace App\Filament\Resources\ClassOfServiceResource\Pages;
 
 use App\Filament\Resources\ClassOfServiceResource;
-use App\Support\ZimbraAdminClient;
+use App\Zimbra\AdminClient;
 use Filament\Resources\Pages\CreateRecord;
 use Zimbra\Admin\Struct\Attr;
 
@@ -21,7 +21,7 @@ class CreateClassOfService extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $mailQuota = $data['mail_quota'] * static::getResource()::MB;
-        $client = app(ZimbraAdminClient::class);
+        $client = app(AdminClient::class);
         $cos = $client->createCos($data['name'], [
             new Attr('zimbraMailQuota', (string) $mailQuota),
             new Attr('description', $data['description']),

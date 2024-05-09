@@ -19,4 +19,8 @@ use Illuminate\Auth\GenericUser;
  */
 class ZimbraUser extends GenericUser
 {
+    public function getAuthIdentifierName()
+    {
+        return 'name';
+    }
 }

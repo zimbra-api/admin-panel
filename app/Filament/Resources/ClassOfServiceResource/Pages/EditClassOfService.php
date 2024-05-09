@@ -9,7 +9,7 @@
 namespace App\Filament\Resources\ClassOfServiceResource\Pages;
 
 use App\Filament\Resources\ClassOfServiceResource;
-use App\Support\ZimbraAdminClient;
+use App\Zimbra\AdminClient;
 use Filament\Resources\Pages\EditRecord;
 use Zimbra\Admin\Struct\Attr;
 
@@ -33,7 +33,7 @@ class EditClassOfService extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $mailQuota = $data['mail_quota'] * static::getResource()::MB;
-        $client = app(ZimbraAdminClient::class);
+        $client = app(AdminClient::class);
 
         if (!in_array($data['name'], self::$defaultCoses)) {
             $client->renameCos($data['zimbra_id'], $data['name']);

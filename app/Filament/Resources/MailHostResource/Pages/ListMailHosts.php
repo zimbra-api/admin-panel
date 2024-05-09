@@ -9,7 +9,7 @@
 namespace App\Filament\Resources\MailHostResource\Pages;
 
 use App\Filament\Resources\MailHostResource;
-use App\Support\ZimbraAdminClient;
+use App\Zimbra\AdminClient;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Carbon;
@@ -23,10 +23,10 @@ class ListMailHosts extends ListRecords
         return [
             Action::make('sync')->action(function () {
                 $model = static::getResource()::getModel();
-                $client = app(ZimbraAdminClient::class);
+                $client = app(AdminClient::class);
                 $servers = $client->getAllMailboxServers();
                 foreach ($servers as $server) {
-                    $attrs = ZimbraAdminClient::getAttrs($server);
+                    $attrs = AdminClient::getAttrs($server);
                     $zimbraCreate = null;
                     if (!empty($attrs['zimbraCreateTimestamp'])) {
                         $zimbraCreate = Carbon::createFromTimestamp(strtotime(

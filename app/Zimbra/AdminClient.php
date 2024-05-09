@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Support;
+namespace App\Zimbra;
 
 use App\Settings\ZimbraSettings;
 use Illuminate\Support\Str;
@@ -33,10 +33,10 @@ use Zimbra\Admin\Struct\{
  * Zimbra admin client
  *
  * @package  App
- * @category Support
+ * @category Zimbra
  * @author   Nguyen Van Nguyen - nguyennv1981@gmail.com
  */
-class ZimbraAdminClient
+class AdminClient
 {
     use ForwardsCalls;
 

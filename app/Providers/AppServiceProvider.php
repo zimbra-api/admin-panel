@@ -8,7 +8,7 @@
 
 namespace App\Providers;
 
-use App\Support\ZimbraAdminClient;
+use App\Zimbra\AdminClient;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ZimbraAdminClient::class, function (): ZimbraAdminClient {
-            $client = ZimbraAdminClient::fromSettings();
+        $this->app->singleton(AdminClient::class, function (): AdminClient {
+            $client = AdminClient::fromSettings();
             $client->authFromSession();
             return $client;
         });

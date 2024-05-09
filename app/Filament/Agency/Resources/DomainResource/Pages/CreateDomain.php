@@ -11,13 +11,11 @@ namespace App\Filament\Agency\Resources\DomainResource\Pages;
 use App\Filament\Agency\Resources\DomainResource;
 use App\Models\Account;
 use App\Models\ClassOfService;
-use App\Support\ZimbraAdminClient;
+use App\Zimbra\AdminClient;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Zimbra\Admin\Struct\Attr;
-use Zimbra\Common\Zimbra\AccountBy;
-use Zimbra\Common\Struct\AccountSelector;
 
 class CreateDomain extends CreateRecord
 {
@@ -26,7 +24,7 @@ class CreateDomain extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $client = app(ZimbraAdminClient::class);
+        $client = app(AdminClient::class);
         $domain = $client->createDomain($data['name'], [
             new Attr('description', $data['description']),
             new Attr('zimbraDomainMaxAccounts', $data['max_accounts']),
@@ -42,8 +40,8 @@ class CreateDomain extends CreateRecord
         $data['account'] = $account;
 
         $data['zimbra_id'] = $domain->getId();
-        $data['attributes'] = ZimbraAdminClient::getAttrs($domain);
-        $zimbraCreate = ZimbraAdminClient::getAttr(
+        $data['attributes'] = AdminClient::getAttrs($domain);
+        $zimbraCreate = AdminClient::getAttr(
             $domain, 'zimbraCreateTimestamp'
         );
         if ($zimbraCreate) {
@@ -62,7 +60,7 @@ class CreateDomain extends CreateRecord
 
         $record = parent::handleRecordCreation($data);
 
-        $attrs = ZimbraAdminClient::getAttrs($account);
+        $attrs = AdminClient::getAttrs($account);
         $zimbraCreate = null;
         if (!empty($attrs['zimbraCreateTimestamp'])) {
             $zimbraCreate = Carbon::createFromTimestamp(

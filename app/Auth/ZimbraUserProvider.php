@@ -8,9 +8,12 @@
 
 namespace App\Auth;
 
-use App\Support\ZimbraAdminClient;
+use App\Models\Account;
+use App\Zimbra\AdminClient;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
+use Zimbra\Common\Zimbra\AccountBy;
+use Zimbra\Common\Struct\AccountSelector;
 
 /**
  * Zimbra user provider
@@ -21,11 +24,13 @@ use Illuminate\Contracts\Auth\UserProvider;
  */
 class ZimbraUserProvider implements UserProvider
 {
-    private readonly ZimbraAdminClient $client;
+    const SESSION_AUTH_TOKEN_KEY = 'user-auth-token';
+
+    private readonly AdminClient $client;
 
     public function __construct()
     {
-        $this->client = app(ZimbraAdminClient::class);
+        $this->client = AdminClient::fromSettings();
     }
 
     /**
@@ -33,6 +38,13 @@ class ZimbraUserProvider implements UserProvider
      */
     public function retrieveById($identifier)
     {
+        if ($account = Account::firstWhere('name', $identifier)) {
+            return new ZimbraUser([
+                'id' => $account->zimbra_id,
+                'name' => $account->name,
+                ...$account->attributes,
+            ]);
+        };
     }
 
     /**
@@ -40,6 +52,20 @@ class ZimbraUserProvider implements UserProvider
      */
     public function retrieveByToken($identifier, $token)
     {
+        try {
+            $this->client->authByToken($token);
+            $account = $this->client->getAccount(
+                new AccountSelector(AccountBy::NAME, $identifier)
+            )->getAccount();
+            return new ZimbraUser([
+                'id' => $account->getId(),
+                'name' => $account->getName(),
+                ...AdminClient::getAttrs($account),
+            ]);
+        }
+        catch (\Throwable $e) {
+            logger()->error($e);
+        }
     }
 
     /**
@@ -47,6 +73,10 @@ class ZimbraUserProvider implements UserProvider
      */
     public function updateRememberToken(Authenticatable $user, $token)
     {
+        $user->setRememberToken($token);
+        session([
+            self::SESSION_AUTH_TOKEN_KEY => $token,
+        ]);
     }
 
     /**
@@ -54,6 +84,15 @@ class ZimbraUserProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
+        $credentials = array_filter(
+            $credentials,
+            fn ($key) => ! str_contains($key, 'password'),
+            ARRAY_FILTER_USE_KEY
+        );
+
+        if (empty($credentials)) {
+            return;
+        }
     }
 
     /**
@@ -61,6 +100,22 @@ class ZimbraUserProvider implements UserProvider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
+        if (is_null($password = $credentials['password'])) {
+            return false;
+        }
+        try {
+            $authToken = $this->client->auth(
+                $user->getAuthIdentifier(), $password
+            )->getAuthToken();
+            session([
+                self::SESSION_AUTH_TOKEN_KEY => $authToken,
+            ]);
+            return true;
+        }
+        catch (\Throwable $e) {
+            logger()->error($e);
+            return false;            
+        }
     }
 
     /**

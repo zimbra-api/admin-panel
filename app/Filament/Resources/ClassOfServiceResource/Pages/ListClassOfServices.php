@@ -9,7 +9,7 @@
 namespace App\Filament\Resources\ClassOfServiceResource\Pages;
 
 use App\Filament\Resources\ClassOfServiceResource;
-use App\Support\ZimbraAdminClient;
+use App\Zimbra\AdminClient;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Carbon;
@@ -25,10 +25,10 @@ class ListClassOfServices extends ListRecords
             Actions\Action::make('sync')
                 ->action(function () {
                     $model = static::getResource()::getModel();
-                    $client = app(ZimbraAdminClient::class);
+                    $client = app(AdminClient::class);
                     $coses = $client->getAllCos()->getCosList();
                     foreach ($coses as $cos) {
-                        $attrs = ZimbraAdminClient::getAttrs($cos);
+                        $attrs = AdminClient::getAttrs($cos);
                         $zimbraCreate = null;
                         if (!empty($attrs['zimbraCreateTimestamp'])) {
                             $zimbraCreate = Carbon::createFromTimestamp(strtotime(
