@@ -40,13 +40,10 @@ class CreateDomain extends CreateRecord
         $data['account'] = $account;
 
         $data['zimbra_id'] = $domain->getId();
-        $data['attributes'] = AdminClient::getAttrs($domain);
-        $zimbraCreate = AdminClient::getAttr(
-            $domain, 'zimbraCreateTimestamp'
-        );
-        if ($zimbraCreate) {
+        $data['attributes'] = $attrs = AdminClient::getAttrs($domain);
+        if (!empty($attrs['zimbraCreateTimestamp'])) {
             $data['zimbra_create'] = Carbon::createFromTimestamp(
-                strtotime(intval($zimbraCreate) . 'Z')
+                strtotime(intval($attrs['zimbraCreateTimestamp']) . 'Z')
             );
         }
         unset($data['admin_password']);
