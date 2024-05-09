@@ -43,7 +43,7 @@ class AdminClient
     const DOMAIN_ADMIN_RIGHTS       = 'domainAdminRights';
     const MODIFY_ACCOUNT_RIGHT      = 'modifyAccount';
     const MODIFY_DISTRIBUTION_RIGHT = 'modifyDistributionList';
-    const SESSION_AUTH_TOKEN_KEY    = 'zimbra-auth-token';
+    const SESSION_AUTH_TOKEN_KEY    = 'auth-token-from-settings';
 
     private readonly AdminApi $api;
 

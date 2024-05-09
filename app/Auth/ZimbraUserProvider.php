@@ -24,7 +24,7 @@ use Zimbra\Common\Struct\AccountSelector;
  */
 class ZimbraUserProvider implements UserProvider
 {
-    const SESSION_AUTH_TOKEN_KEY = 'user-auth-token';
+    const REMEMBER_AUTH_TOKEN = 'remember-auth-token';
 
     private readonly AdminClient $client;
 
@@ -75,7 +75,7 @@ class ZimbraUserProvider implements UserProvider
     {
         $user->setRememberToken($token);
         session([
-            self::SESSION_AUTH_TOKEN_KEY => $token,
+            self::REMEMBER_AUTH_TOKEN => $token,
         ]);
     }
 
@@ -100,7 +100,7 @@ class ZimbraUserProvider implements UserProvider
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        if (is_null($password = $credentials['password'])) {
+        if (empty($password = $credentials['password'])) {
             return false;
         }
         try {
@@ -108,13 +108,13 @@ class ZimbraUserProvider implements UserProvider
                 $user->getAuthIdentifier(), $password
             )->getAuthToken();
             session([
-                self::SESSION_AUTH_TOKEN_KEY => $authToken,
+                self::REMEMBER_AUTH_TOKEN => $authToken,
             ]);
             return true;
         }
         catch (\Throwable $e) {
             logger()->error($e);
-            return false;            
+            return false;
         }
     }
 
