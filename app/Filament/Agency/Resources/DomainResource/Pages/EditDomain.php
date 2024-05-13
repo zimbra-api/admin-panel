@@ -25,6 +25,7 @@ use Filament\Forms\Components\{
 };
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditDomain extends EditRecord
 {
@@ -52,9 +53,13 @@ class EditDomain extends EditRecord
                             ClassOfService::find($state)->sum('max_accounts')
                         );
                     })
+                    ->default(
+                        DomainCos::where('domain_id', $this->getRecord()->id)
+                            ->get()->pluck('id', 'id')->toArray()
+                    )
                     ->required()->label(__('Class Of Services')),
                 TextInput::make('max_accounts')
-                    ->default(0)->minValue(0)->readonly()
+                    ->minValue(0)->readonly()
                     ->required()->label(__('Max Accounts')),
             ]),
             Textarea::make('description')->columnSpan(2)
@@ -64,9 +69,20 @@ class EditDomain extends EditRecord
         ]);
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return $data;
+        if (!empty($data['coses'])) {
+            DomainCos::where('domain_id', $record->id)
+                ->whereNotIn('cos_id', $data['coses'])
+                ->delete();
+            foreach ($data['coses'] as $id) {
+                DomainCos::firstOrCreate([
+                    'domain_id' => $record->id,
+                    'cos_id' => $id,
+                ]);
+            }
+        };
+        return parent::handleRecordUpdate($record, $data);
     }
 
     protected function getHeaderActions(): array
