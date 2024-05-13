@@ -34,7 +34,6 @@ class CreateUser extends CreateRecord
 
     public function form(Form $form): Form
     {
-        $domains = [];
         return $form->schema([
             TextInput::make('name')->required()->label(__('Name')),
             TextInput::make('email')->email()->required()->unique()

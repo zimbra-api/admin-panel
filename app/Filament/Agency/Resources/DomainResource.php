@@ -12,18 +12,6 @@ use App\Filament\Agency\Resources\DomainResource\Pages;
 use App\Enums\DomainStatus;
 use App\Models\ClassOfService;
 use App\Models\Domain;
-use Filament\Forms\{
-    Form,
-    Get,
-    Set,
-};
-use Filament\Forms\Components\{
-    Grid,
-    Hidden,
-    Select,
-    Textarea,
-    TextInput,
-};
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -35,58 +23,6 @@ class DomainResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-m-globe-alt';
     protected static ?string $navigationGroup = 'Manage';
     protected static ?string $slug = 'domain';
-
-    public static function form(Form $form): Form
-    {
-        return $form->schema([
-            Grid::make(3)->schema([
-                TextInput::make('name')
-                    ->rules([
-                        fn () => function (string $attribute, $value, \Closure $fail) {
-                            if (!filter_var($value, FILTER_VALIDATE_DOMAIN)) {
-                                $fail(__('The domain name is invalid.'));
-                            }
-                        },
-                    ])
-                    ->required()->unique()->label(__('Name')),
-                TextInput::make('domain_admin')->email()
-                    ->rules([
-                        fn (Get $get) => function (
-                            string $attribute, $value, \Closure $fail
-                        ) use ($get) {
-                            if (!Str::endsWith($value, $get('name'))) {
-                                $fail(__('The email address must match the domain name.'));
-                            }
-                        },
-                    ])
-                    ->required()->label(__('Domain Admin')),
-                TextInput::make('admin_password')->password()
-                    ->required()->label(__('Admin Password')),
-            ]),
-            Grid::make(3)->schema([
-                Select::make('status')->options(DomainStatus::class)
-                    ->required()->label(__('Status')),
-                Select::make('coses')
-                    ->options(
-                        auth()->user()->agency->coses->pluck('name', 'id')
-                    )->live()->multiple()
-                    ->afterStateUpdated(function (Set $set, array $state) {
-                        $set(
-                            'max_accounts',
-                            ClassOfService::find($state)->sum('max_accounts')
-                        );
-                    })
-                    ->required()->label(__('Class Of Services')),
-                TextInput::make('max_accounts')
-                    ->default(0)->minValue(0)->readonly()
-                    ->required()->label(__('Max Accounts')),
-            ]),
-            Textarea::make('description')->columnSpan(2)
-                ->label(__('Description')),
-            Hidden::make('agency_id')->default(auth()->user()->agency->id),
-            Hidden::make('zimbra_id'),
-        ]);
-    }
 
     public static function table(Table $table): Table
     {
