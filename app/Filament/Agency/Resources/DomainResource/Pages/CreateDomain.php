@@ -28,6 +28,7 @@ use Filament\Forms\Components\{
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Zimbra\Admin\Struct\Attr;
 
 class CreateDomain extends CreateRecord
@@ -80,10 +81,9 @@ class CreateDomain extends CreateRecord
                     ->default(0)->minValue(0)->readonly()
                     ->required()->label(__('Max Accounts')),
             ]),
-            Textarea::make('description')->columnSpan(2)
-                ->label(__('Description')),
+            Textarea::make('description')
+                ->columnSpan(2)->label(__('Description')),
             Hidden::make('agency_id')->default(auth()->user()->agency->id),
-            Hidden::make('zimbra_id'),
         ]);
     }
 

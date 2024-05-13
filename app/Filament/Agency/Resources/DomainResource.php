@@ -9,13 +9,11 @@
 namespace App\Filament\Agency\Resources;
 
 use App\Filament\Agency\Resources\DomainResource\Pages;
-use App\Enums\DomainStatus;
-use App\Models\ClassOfService;
 use App\Models\Domain;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 
 class DomainResource extends Resource
 {
@@ -27,9 +25,12 @@ class DomainResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            //
+            TextColumn::make('name')->searchable()->label(__('Name')),
+            TextColumn::make('domain_admin')->searchable()->label(__('Domain Admin')),
+            TextColumn::make('status')->label(__('Status')),
+            TextColumn::make('coses.name')->listWithLineBreaks()->label(__('Class Of Services')),
         ])->actions([
-            Tables\Actions\EditAction::make(),
+            EditAction::make(),
         ]);
     }
 
