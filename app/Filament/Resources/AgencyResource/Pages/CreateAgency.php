@@ -24,23 +24,19 @@ class CreateAgency extends CreateRecord
     {
         $record = parent::handleRecordCreation($data);
 
-        if (!empty($data['coses'])) {
-            foreach ($data['coses'] as $id) {
-                AgencyCos::create([
-                    'agency_id' => $record->id,
-                    'cos_id' => $id,
-                ]);
-            }
-        };
+        foreach ($data['coses'] as $cos_id) {
+            AgencyCos::create([
+                'agency_id' => $record->id,
+                'cos_id' => $cos_id,
+            ]);
+        }
 
-        if (!empty($data['mail_hosts'])) {
-            foreach ($data['mail_hosts'] as $id) {
-                AgencyMailHost::create([
-                    'agency_id' => $record->id,
-                    'mail_host_id' => $id,
-                ]);
-            }
-        };
+        foreach ($data['mail_hosts'] as $mail_host_id) {
+            AgencyMailHost::create([
+                'agency_id' => $record->id,
+                'mail_host_id' => $mail_host_id,
+            ]);
+        }
 
         return $record;
     }

@@ -41,29 +41,31 @@ class EditAgency extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        if (!empty($data['coses'])) {
-            AgencyCos::where('agency_id', $record->id)
-                ->whereNotIn('cos_id', $data['coses'])
-                ->delete();
-            foreach ($data['coses'] as $id) {
-                AgencyCos::firstOrCreate([
-                    'agency_id' => $record->id,
-                    'cos_id' => $id,
-                ]);
-            }
-        };
+        AgencyCos::where('agency_id', $record->id)
+            ->whereNotIn('cos_id', [
+                0,
+                ...$data['coses'],
+            ])
+            ->delete();
+        foreach ($data['coses'] as $cos_id) {
+            AgencyCos::firstOrCreate([
+                'agency_id' => $record->id,
+                'cos_id' => $cos_id,
+            ]);
+        }
 
-        if (!empty($data['mail_hosts'])) {
-            AgencyMailHost::where('agency_id', $record->id)
-                ->whereNotIn('mail_host_id', $data['mail_hosts'])
-                ->delete();
-            foreach ($data['mail_hosts'] as $id) {
-                AgencyMailHost::firstOrCreate([
-                    'agency_id' => $record->id,
-                    'mail_host_id' => $id,
-                ]);
-            }
-        };
+        AgencyMailHost::where('agency_id', $record->id)
+            ->whereNotIn('mail_host_id', [
+                0,
+                ...$data['mail_hosts'],
+            ])
+            ->delete();
+        foreach ($data['mail_hosts'] as $mail_host_id) {
+            AgencyMailHost::firstOrCreate([
+                'agency_id' => $record->id,
+                'mail_host_id' => $mail_host_id,
+            ]);
+        }
 
         return parent::handleRecordUpdate($record, $data);
     }

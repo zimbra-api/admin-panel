@@ -121,13 +121,11 @@ class CreateDomain extends CreateRecord
         unset($data['account']);
 
         $record = parent::handleRecordCreation($data);
-        if (!empty($data['coses'])) {
-            foreach ($data['coses'] as $cos_id) {
-                DomainCos::create([
-                    'domain_id' => $record->id,
-                    'cos_id' => $cos_id,
-                ]);
-            }
+        foreach ($data['coses'] as $cos_id) {
+            DomainCos::create([
+                'domain_id' => $record->id,
+                'cos_id' => $cos_id,
+            ]);
         }
 
         $attrs = AdminClient::getAttrs($account);

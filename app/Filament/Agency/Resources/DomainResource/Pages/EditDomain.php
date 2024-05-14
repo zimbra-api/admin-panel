@@ -71,17 +71,18 @@ class EditDomain extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        if (!empty($data['coses'])) {
-            DomainCos::where('domain_id', $record->id)
-                ->whereNotIn('cos_id', $data['coses'])
-                ->delete();
-            foreach ($data['coses'] as $id) {
-                DomainCos::firstOrCreate([
-                    'domain_id' => $record->id,
-                    'cos_id' => $id,
-                ]);
-            }
-        };
+        DomainCos::where('domain_id', $record->id)
+            ->whereNotIn('cos_id', [
+                0,
+                ...$data['coses'],
+            ])
+            ->delete();
+        foreach ($data['coses'] as $cos_id) {
+            DomainCos::firstOrCreate([
+                'domain_id' => $record->id,
+                'cos_id' => $cos_id,
+            ]);
+        }
         return parent::handleRecordUpdate($record, $data);
     }
 
