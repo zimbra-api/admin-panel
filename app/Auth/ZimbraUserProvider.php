@@ -106,7 +106,7 @@ class ZimbraUserProvider implements UserProvider
                 if (Str::of($value)->isUuid()) {
                     $model->where('zimbra_id', $value);
                 }
-                elseif ($key === 'name' || $key === 'email') {
+                elseif ($key === 'email') {
                     $model->where('name', $value);
                 }
                 else {
