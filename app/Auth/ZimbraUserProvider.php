@@ -12,6 +12,8 @@ use App\Models\Account;
 use App\Zimbra\AdminClient;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Str;
 use Zimbra\Common\Zimbra\AccountBy;
 use Zimbra\Common\Struct\AccountSelector;
 
@@ -84,13 +86,35 @@ class ZimbraUserProvider implements UserProvider
     {
         $credentials = array_filter(
             $credentials,
-            fn ($key) => ! str_contains($key, 'password'),
+            fn ($key) => !str_contains($key, 'password'),
             ARRAY_FILTER_USE_KEY
         );
 
         if (empty($credentials)) {
             return;
         }
+
+        $model = new Account();
+        foreach ($credentials as $key => $value) {
+            if (is_array($value) || $value instanceof Arrayable) {
+                $model->whereIn($key, $value);
+            }
+            elseif ($value instanceof \Closure) {
+                $value($query);
+            }
+            else {
+                if (Str::of($value)->isUuid()) {
+                    $model->where('zimbra_id', $value);
+                }
+                elseif ($key === 'name' || $key === 'email') {
+                    $model->where('name', $value);
+                }
+                else {
+                    $query->where($key, $value);
+                }
+            }
+        }
+        return $model->first();
     }
 
     /**
